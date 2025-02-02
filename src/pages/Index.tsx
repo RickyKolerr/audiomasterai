@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, Headphones, Book, Star, Shield } from "lucide-react"
 import { useState } from "react"
 import SubscriptionDialog from "@/components/pricing/SubscriptionDialog"
+import PricingCard from "@/components/pricing/PricingCard"
 
 const Index = () => {
   const [selectedPlan, setSelectedPlan] = useState<{
