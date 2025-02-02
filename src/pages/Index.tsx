@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
+import ChatInterface from "@/components/chat/ChatInterface";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Headphones, Book, Star, Shield } from "lucide-react";
 
@@ -60,6 +61,7 @@ const Index = () => {
         </div>
       </section>
 
+      <ChatInterface />
       <Footer />
     </main>
   );
