@@ -21,7 +21,7 @@ import {
   Share2,
   Download,
   Link,
-  WhatsApp,
+  MessageCircle,
   Copy,
   CheckCircle2,
 } from "lucide-react";
@@ -96,10 +96,10 @@ const ShareDownload = () => {
                   <Button
                     variant="outline"
                     className="bg-green-500/10 hover:bg-green-500/20 border-green-500/50"
-                    onClick={() => handleShare("WhatsApp")}
+                    onClick={() => handleShare("Message")}
                   >
-                    <WhatsApp className="mr-2 h-4 w-4" />
-                    WhatsApp
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Message
                   </Button>
                   <Button
                     variant="outline"
