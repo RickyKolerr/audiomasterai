@@ -1,3 +1,4 @@
+import { useState } from "react"
 import Navbar from "@/components/Navbar"
 import Hero from "@/components/Hero"
 import Features from "@/components/Features"
@@ -7,15 +8,16 @@ import Footer from "@/components/Footer"
 import ChatInterface from "@/components/chat/ChatInterface"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Headphones, Book, Star, Shield } from "lucide-react"
-import { useState } from "react"
 import SubscriptionDialog from "@/components/pricing/SubscriptionDialog"
 import PricingCard from "@/components/pricing/PricingCard"
+import OnboardingFlow from "@/components/onboarding/OnboardingFlow"
 
 const Index = () => {
   const [selectedPlan, setSelectedPlan] = useState<{
     name: string;
     price: string;
   } | null>(null)
+  const [showOnboarding, setShowOnboarding] = useState(false)
 
   const plans = [
     {
@@ -56,6 +58,15 @@ const Index = () => {
       ]
     }
   ]
+
+  const handleGetStarted = () => {
+    setShowOnboarding(true)
+  }
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false)
+    // Here you would typically redirect to the dashboard
+  }
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -125,6 +136,7 @@ const Index = () => {
           </p>
           <Button 
             size="lg"
+            onClick={handleGetStarted}
             className="bg-gradient-to-r from-green-500 to-blue-500 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group"
           >
             Get Started Now
@@ -144,6 +156,11 @@ const Index = () => {
           planPrice={selectedPlan.price}
         />
       )}
+
+      <OnboardingFlow 
+        isOpen={showOnboarding}
+        onComplete={handleOnboardingComplete}
+      />
     </main>
   )
 }
