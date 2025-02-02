@@ -1,22 +1,38 @@
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { CreditCard, Download } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { CreditCard, Download, Loader2 } from "lucide-react";
+import { PaymentMethodSelector } from "@/components/PaymentMethodSelector";
+import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 
 interface BillingSettingsProps {
-  onSave: () => void
+  onSave: () => void;
 }
 
 const BillingSettings = ({ onSave }: BillingSettingsProps) => {
-  const handleUpdatePayment = () => {
-    onSave()
-  }
+  const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const { toast } = useToast();
+
+  const handleUpdatePayment = async () => {
+    setLoading(true);
+    // Mock API call - replace with real API call later
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    toast({
+      title: "Payment method updated",
+      description: "Your payment method has been successfully updated.",
+    });
+    setLoading(false);
+    onSave();
+  };
 
   return (
     <div className="space-y-6">
       <div className="space-y-4">
         <div className="space-y-2">
           <Label>Current Plan</Label>
-          <div className="flex items-center justify-between p-4 rounded-lg bg-black/30 border border-green-500/20">
+          <Card className="flex items-center justify-between p-4 bg-black/30 border-green-500/20">
             <div>
               <div className="font-medium">Pro Plan</div>
               <div className="text-sm text-gray-400">$9.99/month</div>
@@ -24,23 +40,31 @@ const BillingSettings = ({ onSave }: BillingSettingsProps) => {
             <Button variant="outline" size="sm">
               Change Plan
             </Button>
-          </div>
+          </Card>
         </div>
 
         <div className="space-y-2">
           <Label>Payment Method</Label>
-          <div className="flex items-center justify-between p-4 rounded-lg bg-black/30 border border-green-500/20">
-            <div className="flex items-center space-x-3">
-              <CreditCard className="h-5 w-5 text-gray-400" />
-              <div>
-                <div className="font-medium">•••• •••• •••• 4242</div>
-                <div className="text-sm text-gray-400">Expires 12/24</div>
-              </div>
-            </div>
-            <Button variant="outline" size="sm" onClick={handleUpdatePayment}>
-              Update
-            </Button>
-          </div>
+          <PaymentMethodSelector
+            selectedMethod={paymentMethod}
+            onSelect={setPaymentMethod}
+          />
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleUpdatePayment}
+            disabled={loading}
+            className="mt-4"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Updating...
+              </>
+            ) : (
+              "Update Payment Method"
+            )}
+          </Button>
         </div>
 
         <div className="space-y-2">
@@ -51,9 +75,9 @@ const BillingSettings = ({ onSave }: BillingSettingsProps) => {
               { date: "Feb 1, 2024", amount: "$9.99" },
               { date: "Jan 1, 2024", amount: "$9.99" },
             ].map((invoice, index) => (
-              <div
+              <Card
                 key={index}
-                className="flex items-center justify-between p-4 rounded-lg bg-black/30 border border-green-500/20"
+                className="flex items-center justify-between p-4 bg-black/30 border-green-500/20"
               >
                 <div>
                   <div className="font-medium">{invoice.date}</div>
@@ -62,13 +86,13 @@ const BillingSettings = ({ onSave }: BillingSettingsProps) => {
                 <Button variant="ghost" size="icon">
                   <Download className="h-4 w-4" />
                 </Button>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BillingSettings
+export default BillingSettings;

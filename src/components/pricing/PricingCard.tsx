@@ -1,15 +1,16 @@
-import { Check } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { Check, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
 
 interface PricingCardProps {
-  name: string
-  price: string
-  description: string
-  features: string[]
-  popular?: boolean
-  onSelect: () => void
-  loading?: boolean
+  name: string;
+  price: string;
+  description: string;
+  features: string[];
+  popular?: boolean;
+  onSelect: () => void;
+  loading?: boolean;
 }
 
 const PricingCard = ({
@@ -19,12 +20,12 @@ const PricingCard = ({
   features,
   popular,
   onSelect,
-  loading
+  loading,
 }: PricingCardProps) => {
   return (
-    <div
+    <Card
       className={cn(
-        "relative p-8 rounded-xl bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 hover:border-green-500/40 transition-all duration-300 transform hover:-translate-y-1",
+        "relative p-8 bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 hover:border-green-500/40 transition-all duration-300 transform hover:-translate-y-1",
         popular && "scale-105 md:scale-110"
       )}
     >
@@ -54,10 +55,17 @@ const PricingCard = ({
         disabled={loading}
         className="w-full bg-green-500 hover:bg-green-600 text-white group-hover:scale-105 transition-transform"
       >
-        {loading ? "Processing..." : price === "Free" ? "Get Started" : "Subscribe Now"}
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Processing...
+          </>
+        ) : (
+          price === "Free" ? "Get Started" : "Subscribe Now"
+        )}
       </Button>
-    </div>
-  )
-}
+    </Card>
+  );
+};
 
-export default PricingCard
+export default PricingCard;
