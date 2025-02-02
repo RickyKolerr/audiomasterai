@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
 import { Link, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import AuthDialog from "./auth/AuthDialog";
 
 const Navbar = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -56,13 +58,14 @@ const Navbar = () => {
           </NavigationMenu>
           <Button 
             className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group"
+            onClick={() => setShowAuthDialog(true)}
           >
             <Crown className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
             Get Started
           </Button>
         </div>
 
-        <Sheet>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden text-white">
               <Menu className="h-6 w-6" />
@@ -85,6 +88,10 @@ const Navbar = () => {
               ))}
               <Button 
                 className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group w-full"
+                onClick={() => {
+                  setIsOpen(false);
+                  setShowAuthDialog(true);
+                }}
               >
                 <Crown className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                 Get Started
@@ -93,6 +100,11 @@ const Navbar = () => {
           </SheetContent>
         </Sheet>
       </div>
+
+      <AuthDialog 
+        isOpen={showAuthDialog}
+        onClose={() => setShowAuthDialog(false)}
+      />
     </nav>
   );
 };
