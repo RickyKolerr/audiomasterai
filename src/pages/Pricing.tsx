@@ -1,9 +1,28 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 const PricingPage = () => {
+  const [loading, setLoading] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const handlePayment = async (planName: string, price: string) => {
+    setLoading(planName);
+    
+    // Mock API call - replace with real Stripe/payment integration later
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    toast({
+      title: "Payment Initiated",
+      description: `Redirecting to payment for ${planName} plan (${price})`,
+    });
+    
+    setLoading(null);
+  };
+
   const plans = [
     {
       name: "Basic",
@@ -15,7 +34,9 @@ const PricingPage = () => {
         "Standard quality audio",
         "Email support"
       ],
-      color: "green"
+      color: "green",
+      buttonText: "Start Free",
+      period: null
     },
     {
       name: "Pro",
@@ -30,6 +51,7 @@ const PricingPage = () => {
         "Offline access"
       ],
       color: "blue",
+      buttonText: "Subscribe with Stripe",
       popular: true
     },
     {
@@ -45,7 +67,8 @@ const PricingPage = () => {
         "API access",
         "Custom voice training"
       ],
-      color: "pink"
+      color: "pink",
+      buttonText: "Contact Sales"
     }
   ];
 
@@ -90,11 +113,43 @@ const PricingPage = () => {
               </ul>
               <Button 
                 className={`w-full bg-${plan.color}-500 hover:bg-${plan.color}-600 text-white group-hover:scale-105 transition-transform`}
+                onClick={() => handlePayment(plan.name, plan.price)}
+                disabled={loading === plan.name}
               >
-                Get Started
+                {loading === plan.name ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : null}
+                {plan.buttonText}
               </Button>
             </div>
           ))}
+        </div>
+
+        <div className="mt-16 text-center">
+          <h2 className="text-2xl font-bold mb-4">Payment Methods We Accept</h2>
+          <div className="flex justify-center items-center gap-8">
+            <div className="flex items-center gap-2 text-gray-400">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+              </svg>
+              <span>Credit Card</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-400">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm1 19h-2v-2h2v2zm0-4h-2V5h2v10z"/>
+              </svg>
+              <span>PayPal</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-12 max-w-2xl mx-auto text-center text-gray-400">
+          <p className="mb-4">
+            All payments are processed securely through Stripe. We never store your card details.
+          </p>
+          <p>
+            Questions about our pricing? <button className="text-blue-500 hover:underline">Contact our sales team</button>
+          </p>
         </div>
       </div>
       <Footer />
