@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
 import { Link, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ThemeToggle } from "./theme/ThemeToggle";
 import AuthDialog from "./auth/AuthDialog";
 
 const Navbar = () => {
@@ -29,7 +30,7 @@ const Navbar = () => {
         <NavigationMenuItem key={item.path}>
           <Link 
             to={item.path}
-            className={`text-white hover:text-green-500 transition-colors flex items-center gap-2 group ${
+            className={`text-foreground hover:text-green-500 transition-colors flex items-center gap-2 group ${
               isActive(item.path) ? 'text-green-500' : ''
             }`}
           >
@@ -42,7 +43,7 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="fixed top-0 w-full bg-black/95 backdrop-blur-sm z-50 py-4 border-b border-green-500/20">
+    <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 py-4 border-b border-green-500/20">
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link to="/" className="flex items-center space-x-2 group">
           <Headphones className="w-8 h-8 text-green-500 group-hover:scale-110 transition-transform" />
@@ -57,6 +58,7 @@ const Navbar = () => {
               <NavContent />
             </NavigationMenuList>
           </NavigationMenu>
+          <ThemeToggle />
           <Button 
             className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group"
             onClick={() => setShowAuthDialog(true)}
@@ -68,17 +70,17 @@ const Navbar = () => {
 
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden text-white">
+            <Button variant="ghost" size="icon" className="md:hidden text-foreground">
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] bg-black border-l border-green-500/20">
+          <SheetContent side="right" className="w-[300px] bg-background border-l border-green-500/20">
             <div className="flex flex-col space-y-6 mt-6">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`text-white hover:text-green-500 transition-colors flex items-center gap-2 group ${
+                  className={`text-foreground hover:text-green-500 transition-colors flex items-center gap-2 group ${
                     isActive(item.path) ? 'text-green-500' : ''
                   }`}
                   onClick={() => setIsOpen(false)}
@@ -87,6 +89,9 @@ const Navbar = () => {
                   {item.label}
                 </Link>
               ))}
+              <div className="flex items-center gap-4">
+                <ThemeToggle />
+              </div>
               <Button 
                 className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group w-full"
                 onClick={() => {
