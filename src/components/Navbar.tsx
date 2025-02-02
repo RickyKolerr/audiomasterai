@@ -1,16 +1,34 @@
 import { useState } from "react";
-import { Menu, X, Star, DollarSign, Mail, Book, Headphones, Crown, ShoppingCart, FileText } from "lucide-react";
+import { Menu, X, Star, DollarSign, Mail, Book, Headphones, Crown, ShoppingCart, FileText, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "./theme/ThemeToggle";
-import AuthDialog from "./auth/AuthDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
+    } else {
+      toast({
+        title: "Signed out successfully",
+      });
+      navigate("/");
+    }
+  };
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -61,10 +79,18 @@ const Navbar = () => {
           <ThemeToggle />
           <Button 
             className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group"
-            onClick={() => setShowAuthDialog(true)}
+            onClick={() => navigate("/auth")}
           >
             <Crown className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
             Get Started
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleSignOut}
+            className="text-gray-400 hover:text-white"
+          >
+            <LogOut className="h-5 w-5" />
           </Button>
         </div>
 
@@ -96,21 +122,27 @@ const Navbar = () => {
                 className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group w-full"
                 onClick={() => {
                   setIsOpen(false);
-                  setShowAuthDialog(true);
+                  navigate("/auth");
                 }}
               >
                 <Crown className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                 Get Started
               </Button>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  handleSignOut();
+                  setIsOpen(false);
+                }}
+                className="w-full justify-start text-gray-400 hover:text-white"
+              >
+                <LogOut className="h-5 w-5 mr-2" />
+                Sign Out
+              </Button>
             </div>
           </SheetContent>
         </Sheet>
       </div>
-
-      <AuthDialog 
-        isOpen={showAuthDialog}
-        onClose={() => setShowAuthDialog(false)}
-      />
     </nav>
   );
 };
