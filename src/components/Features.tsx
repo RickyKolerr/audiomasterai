@@ -19,7 +19,8 @@ const features = [
     title: "Share & Download",
     description: "Share your audiobooks or download for offline listening",
     icon: Share2,
-    color: "pink"
+    color: "pink",
+    action: "share-section"
   },
   {
     title: "Premium Voices",
@@ -41,29 +42,29 @@ const features = [
   }
 ];
 
-  const getGradient = (color: string) => {
-    const gradients = {
-      green: "from-green-500/20 to-transparent border-green-500/20 hover:border-green-500/40",
-      blue: "from-blue-500/20 to-transparent border-blue-500/20 hover:border-blue-500/40",
-      pink: "from-pink-500/20 to-transparent border-pink-500/20 hover:border-pink-500/40",
-      purple: "from-purple-500/20 to-transparent border-purple-500/20 hover:border-purple-500/40",
-      orange: "from-orange-500/20 to-transparent border-orange-500/20 hover:border-orange-500/40",
-      yellow: "from-yellow-500/20 to-transparent border-yellow-500/20 hover:border-yellow-500/40"
-    };
-    return gradients[color as keyof typeof gradients];
+const getGradient = (color: string) => {
+  const gradients = {
+    green: "from-green-500/20 to-transparent border-green-500/20 hover:border-green-500/40",
+    blue: "from-blue-500/20 to-transparent border-blue-500/20 hover:border-blue-500/40",
+    pink: "from-pink-500/20 to-transparent border-pink-500/20 hover:border-pink-500/40",
+    purple: "from-purple-500/20 to-transparent border-purple-500/20 hover:border-purple-500/40",
+    orange: "from-orange-500/20 to-transparent border-orange-500/20 hover:border-orange-500/40",
+    yellow: "from-yellow-500/20 to-transparent border-yellow-500/20 hover:border-yellow-500/40"
   };
+  return gradients[color as keyof typeof gradients];
+};
 
-  const getIconColor = (color: string) => {
-    const colors = {
-      green: "text-green-500",
-      blue: "text-blue-500",
-      pink: "text-pink-500",
-      purple: "text-purple-500",
-      orange: "text-orange-500",
-      yellow: "text-yellow-500"
-    };
-    return colors[color as keyof typeof colors];
+const getIconColor = (color: string) => {
+  const colors = {
+    green: "text-green-500",
+    blue: "text-blue-500",
+    pink: "text-pink-500",
+    purple: "text-purple-500",
+    orange: "text-orange-500",
+    yellow: "text-yellow-500"
   };
+  return colors[color as keyof typeof colors];
+};
 
 const Features = () => {
   const handleFeatureClick = (sectionId?: string) => {
