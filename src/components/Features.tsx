@@ -1,4 +1,4 @@
-import { Book, Headphones, Upload, Settings, Share2, Crown, BookOpen } from "lucide-react";
+import { Book, Settings, Upload, Share2, Crown, BookOpen } from "lucide-react";
 
 const features = [
   {
@@ -12,7 +12,8 @@ const features = [
     title: "Voice Customization",
     description: "Choose from multiple voices and customize to your preference",
     icon: Settings,
-    color: "blue"
+    color: "blue",
+    action: "voice-section"
   },
   {
     title: "Share & Download",
@@ -40,7 +41,6 @@ const features = [
   }
 ];
 
-const Features = () => {
   const getGradient = (color: string) => {
     const gradients = {
       green: "from-green-500/20 to-transparent border-green-500/20 hover:border-green-500/40",
@@ -65,6 +65,7 @@ const Features = () => {
     return colors[color as keyof typeof colors];
   };
 
+const Features = () => {
   const handleFeatureClick = (sectionId?: string) => {
     if (sectionId) {
       const section = document.getElementById(sectionId);
