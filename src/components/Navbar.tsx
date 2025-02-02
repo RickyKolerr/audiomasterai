@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Star, DollarSign, Mail, Book, Headphones, Crown, ShoppingCart } from "lucide-react";
+import { Menu, X, Star, DollarSign, Mail, Book, Headphones, Crown, ShoppingCart, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
 import { Link, useLocation } from "react-router-dom";
@@ -18,6 +18,7 @@ const Navbar = () => {
   const navItems = [
     { path: "/features", icon: Book, label: "Features" },
     { path: "/pricing", icon: DollarSign, label: "Pricing" },
+    { path: "/documents", icon: FileText, label: "Documents" },
     { path: "/marketplace", icon: ShoppingCart, label: "Marketplace" },
     { path: "/contact", icon: Mail, label: "Contact" },
   ];

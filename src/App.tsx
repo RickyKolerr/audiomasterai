@@ -11,6 +11,7 @@ import Pricing from "./pages/Pricing"
 import Contact from "./pages/Contact"
 import Marketplace from "./pages/Marketplace"
 import Dashboard from "./pages/Dashboard"
+import Documents from "./pages/Documents"
 import About from "./pages/About"
 import Blog from "./pages/Blog"
 import Careers from "./pages/Careers"
@@ -41,6 +42,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/documents" element={<Documents />} />
               <Route path="/features" element={<Features />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/docs" element={<Documentation />} />
