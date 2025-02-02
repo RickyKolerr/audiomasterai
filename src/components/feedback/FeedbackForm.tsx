@@ -3,28 +3,57 @@ import { Star, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 
 const FeedbackForm = () => {
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to submit feedback",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Feedback Submitted",
-      description: "Thank you for your feedback!",
-    });
-    
-    setIsSubmitting(false);
-    setRating(0);
-    setFeedback("");
+    try {
+      const { error } = await supabase
+        .from('feedback')
+        .insert({
+          message: `Rating: ${rating}/5 - ${feedback}`,
+          user_id: user.id
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Feedback Submitted",
+        description: "Thank you for your feedback!",
+      });
+      
+      setRating(0);
+      setFeedback("");
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit feedback. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
