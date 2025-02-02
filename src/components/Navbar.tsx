@@ -1,4 +1,4 @@
-import { Menu, Book, Headphones, Crown } from "lucide-react";
+import { Menu, Star, DollarSign, Mail, Book, Headphones, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "@/components/ui/navigation-menu";
 
@@ -15,27 +15,49 @@ const Navbar = () => {
         
         <div className="hidden md:flex items-center space-x-8">
           <NavigationMenu>
-            <NavigationMenuList className="space-x-4">
+            <NavigationMenuList className="space-x-6">
               <NavigationMenuItem>
-                <NavigationMenuLink className="text-white hover:text-green-500 transition-colors" href="#features">
+                <NavigationMenuLink 
+                  className="text-white hover:text-green-500 transition-colors flex items-center gap-2 group" 
+                  href="#features"
+                >
+                  <Book className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Features
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink className="text-white hover:text-green-500 transition-colors" href="#marketplace">
-                  Marketplace
+                <NavigationMenuLink 
+                  className="text-white hover:text-green-500 transition-colors flex items-center gap-2 group" 
+                  href="#pricing"
+                >
+                  <DollarSign className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  Pricing
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink className="text-white hover:text-green-500 transition-colors" href="#pricing">
-                  Pricing
+                <NavigationMenuLink 
+                  className="text-white hover:text-green-500 transition-colors flex items-center gap-2 group" 
+                  href="#testimonials"
+                >
+                  <Star className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  Testimonials
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink 
+                  className="text-white hover:text-green-500 transition-colors flex items-center gap-2 group" 
+                  href="#contact"
+                >
+                  <Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  Contact
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
           <Button 
-            className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300"
+            className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group"
           >
+            <Crown className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
             Get Started
           </Button>
         </div>
