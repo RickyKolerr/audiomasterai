@@ -1,3 +1,5 @@
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -48,8 +50,9 @@ const PricingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black pt-20">
-      <div className="container mx-auto px-4 py-16">
+    <main className="min-h-screen bg-black text-white">
+      <Navbar />
+      <div className="container mx-auto px-4 py-24">
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">
           Simple, Transparent
           <span className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text"> Pricing</span>
@@ -94,7 +97,8 @@ const PricingPage = () => {
           ))}
         </div>
       </div>
-    </div>
+      <Footer />
+    </main>
   );
 };
 

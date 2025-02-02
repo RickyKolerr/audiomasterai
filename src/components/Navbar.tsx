@@ -1,9 +1,15 @@
 import { Menu, Star, DollarSign, Mail, Book, Headphones, Crown, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "@/components/ui/navigation-menu";
-import { Link } from "react-router-dom";
+import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
     <nav className="fixed top-0 w-full bg-black/95 backdrop-blur-sm z-50 py-4 border-b border-green-500/20">
       <div className="container mx-auto flex items-center justify-between">
@@ -20,7 +26,7 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <Link 
                   to="/features"
-                  className="text-white hover:text-green-500 transition-colors flex items-center gap-2 group" 
+                  className={`text-white hover:text-green-500 transition-colors flex items-center gap-2 group ${isActive('/features') ? 'text-green-500' : ''}`}
                 >
                   <Book className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Features
@@ -29,7 +35,7 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <Link 
                   to="/pricing"
-                  className="text-white hover:text-green-500 transition-colors flex items-center gap-2 group" 
+                  className={`text-white hover:text-green-500 transition-colors flex items-center gap-2 group ${isActive('/pricing') ? 'text-green-500' : ''}`}
                 >
                   <DollarSign className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Pricing
@@ -38,7 +44,7 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <Link 
                   to="/marketplace"
-                  className="text-white hover:text-green-500 transition-colors flex items-center gap-2 group" 
+                  className={`text-white hover:text-green-500 transition-colors flex items-center gap-2 group ${isActive('/marketplace') ? 'text-green-500' : ''}`}
                 >
                   <ShoppingCart className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Marketplace
@@ -47,7 +53,7 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <Link 
                   to="/contact"
-                  className="text-white hover:text-green-500 transition-colors flex items-center gap-2 group" 
+                  className={`text-white hover:text-green-500 transition-colors flex items-center gap-2 group ${isActive('/contact') ? 'text-green-500' : ''}`}
                 >
                   <Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Contact
