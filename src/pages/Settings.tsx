@@ -2,9 +2,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
 import ProfileSettings from "@/components/settings/ProfileSettings"
 import SecuritySettings from "@/components/settings/SecuritySettings"
-import NotificationSettings from "@/components/settings/NotificationSettings"
+import NotificationPreferences from "@/components/notifications/NotificationPreferences"
 import BillingSettings from "@/components/settings/BillingSettings"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 
 const Settings = () => {
   const { toast } = useToast()
@@ -42,9 +42,7 @@ const Settings = () => {
           </TabsContent>
 
           <TabsContent value="notifications">
-            <Card className="bg-black/50 border border-green-500/20 p-6">
-              <NotificationSettings onSave={handleSettingsSave} />
-            </Card>
+            <NotificationPreferences />
           </TabsContent>
 
           <TabsContent value="billing">

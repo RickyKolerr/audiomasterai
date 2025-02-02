@@ -1,6 +1,7 @@
-import { Bell, Settings } from "lucide-react"
+import { Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
+import NotificationCenter from "@/components/notifications/NotificationCenter"
 
 const DashboardNav = () => {
   return (
@@ -13,9 +14,7 @@ const DashboardNav = () => {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-              <Bell className="h-5 w-5" />
-            </Button>
+            <NotificationCenter />
             <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
               <Settings className="h-5 w-5" />
             </Button>
