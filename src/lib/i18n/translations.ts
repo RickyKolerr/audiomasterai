@@ -24,6 +24,26 @@ export const translations = {
       studyMaterials: "Study Materials",
       easyUpload: "Easy Upload",
     },
+    footer: {
+      product: "Product",
+      company: "Company",
+      resources: "Resources",
+      legal: "Legal",
+      allRightsReserved: "All rights reserved",
+      terms: "Terms",
+      privacy: "Privacy",
+      cookies: "Cookies",
+    },
+    pages: {
+      about: "About",
+      blog: "Blog",
+      careers: "Careers",
+      community: "Community",
+      helpCenter: "Help Center",
+      partners: "Partners",
+      documentation: "Documentation",
+      security: "Security",
+    }
   },
   vi: {
     common: {
@@ -50,6 +70,26 @@ export const translations = {
       studyMaterials: "Tài Liệu Học Tập",
       easyUpload: "Tải Lên Dễ Dàng",
     },
+    footer: {
+      product: "Sản Phẩm",
+      company: "Công Ty",
+      resources: "Tài Nguyên",
+      legal: "Pháp Lý",
+      allRightsReserved: "Đã đăng ký bản quyền",
+      terms: "Điều Khoản",
+      privacy: "Quyền Riêng Tư",
+      cookies: "Cookie",
+    },
+    pages: {
+      about: "Về Chúng Tôi",
+      blog: "Blog",
+      careers: "Tuyển Dụng",
+      community: "Cộng Đồng",
+      helpCenter: "Trung Tâm Trợ Giúp",
+      partners: "Đối Tác",
+      documentation: "Tài Liệu",
+      security: "Bảo Mật",
+    }
   },
 };
 
