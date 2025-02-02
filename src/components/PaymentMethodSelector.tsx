@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Icons } from "@/components/ui/icons";
+import { CreditCard, DollarSign } from "lucide-react";
 import { APIStatusBadge } from "./APIStatusBadge";
 import { useOpenAIStatus } from "@/services/openai";
 import { useElevenLabsStatus } from "@/services/elevenlabs";
@@ -24,13 +24,13 @@ export const PaymentMethodSelector = ({
       id: "card",
       name: "Credit Card",
       description: "Pay securely with your credit card",
-      icon: "creditCard",
+      icon: CreditCard,
     },
     {
       id: "paypal",
       name: "PayPal",
       description: "Pay with your PayPal account",
-      icon: "paypal",
+      icon: DollarSign,
     },
   ];
 
@@ -69,7 +69,7 @@ export const PaymentMethodSelector = ({
                 <div className="flex w-full items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="rounded-lg bg-background p-2">
-                      {Icons[method.icon as keyof typeof Icons]?.({})}
+                      <method.icon className="h-5 w-5" />
                     </div>
                     <div className="space-y-1">
                       <p className="text-sm font-medium leading-none">
