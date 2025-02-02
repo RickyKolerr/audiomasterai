@@ -5,6 +5,13 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 const Hero = () => {
   const { t } = useLanguage();
 
+  const scrollToConversion = () => {
+    const conversionSection = document.getElementById('conversion-section');
+    if (conversionSection) {
+      conversionSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-black pt-16">
       <div className="container mx-auto px-4">
@@ -25,6 +32,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="bg-gradient-to-r from-green-500 to-blue-500 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group"
+              onClick={scrollToConversion}
             >
               <Upload className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               {t('hero', 'convertButton')}

@@ -9,7 +9,7 @@ const Index = () => {
     <main className="min-h-screen bg-black text-white">
       <Navbar />
       <Hero />
-      <section className="py-20 px-4">
+      <section id="conversion-section" className="py-20 px-4">
         <BookConversion />
       </section>
       <Features />

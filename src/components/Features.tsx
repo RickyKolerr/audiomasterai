@@ -5,7 +5,8 @@ const features = [
     title: "Smart Conversion",
     description: "Convert any book into high-quality audiobooks using advanced AI",
     icon: Book,
-    color: "green"
+    color: "green",
+    action: "conversion-section"
   },
   {
     title: "Voice Customization",
@@ -64,6 +65,15 @@ const Features = () => {
     return colors[color as keyof typeof colors];
   };
 
+  const handleFeatureClick = (sectionId?: string) => {
+    if (sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <section id="features" className="py-20 bg-black">
       <div className="container mx-auto px-4">
@@ -76,7 +86,8 @@ const Features = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`p-6 rounded-xl bg-gradient-to-br ${getGradient(feature.color)} border transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-${feature.color}-500/10 group`}
+              className={`p-6 rounded-xl bg-gradient-to-br ${getGradient(feature.color)} border transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-${feature.color}-500/10 group cursor-pointer`}
+              onClick={() => handleFeatureClick(feature.action)}
             >
               <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${getIconColor(feature.color)} group-hover:scale-110 transition-transform`}>
                 <feature.icon className="w-6 h-6" />
