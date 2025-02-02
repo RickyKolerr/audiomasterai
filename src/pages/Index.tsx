@@ -5,12 +5,12 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-black text-white">
       <Navbar />
       <Hero />
       <Features />
       <Footer />
-    </div>
+    </main>
   );
 };
 
