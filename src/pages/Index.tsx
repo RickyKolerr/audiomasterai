@@ -2,13 +2,13 @@ import Navbar from "@/components/Navbar"
 import Hero from "@/components/Hero"
 import Features from "@/components/Features"
 import Testimonials from "@/components/Testimonials"
+import FeedbackPage from "@/components/feedback/FeedbackPage"
 import Footer from "@/components/Footer"
 import ChatInterface from "@/components/chat/ChatInterface"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Headphones, Book, Star, Shield } from "lucide-react"
-import PricingCard from "@/components/pricing/PricingCard"
-import SubscriptionDialog from "@/components/pricing/SubscriptionDialog"
 import { useState } from "react"
+import SubscriptionDialog from "@/components/pricing/SubscriptionDialog"
 
 const Index = () => {
   const [selectedPlan, setSelectedPlan] = useState<{
@@ -110,7 +110,7 @@ const Index = () => {
         </div>
       </section>
 
-      <Testimonials />
+      <FeedbackPage />
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-b from-black/90 to-black">
