@@ -1,13 +1,61 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Features from "@/components/Features";
-import Testimonials from "@/components/Testimonials";
-import Footer from "@/components/Footer";
-import ChatInterface from "@/components/chat/ChatInterface";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Headphones, Book, Star, Shield } from "lucide-react";
+import Navbar from "@/components/Navbar"
+import Hero from "@/components/Hero"
+import Features from "@/components/Features"
+import Testimonials from "@/components/Testimonials"
+import Footer from "@/components/Footer"
+import ChatInterface from "@/components/chat/ChatInterface"
+import { Button } from "@/components/ui/button"
+import { ArrowRight, Headphones, Book, Star, Shield } from "lucide-react"
+import PricingCard from "@/components/pricing/PricingCard"
+import SubscriptionDialog from "@/components/pricing/SubscriptionDialog"
+import { useState } from "react"
 
 const Index = () => {
+  const [selectedPlan, setSelectedPlan] = useState<{
+    name: string;
+    price: string;
+  } | null>(null)
+
+  const plans = [
+    {
+      name: "Basic",
+      price: "Free",
+      description: "Perfect for getting started",
+      features: [
+        "Convert up to 3 books per month",
+        "Basic voice options",
+        "Standard quality audio",
+        "Email support"
+      ]
+    },
+    {
+      name: "Pro",
+      price: "$9.99",
+      description: "Most popular choice",
+      features: [
+        "Convert up to 20 books per month",
+        "Premium voice options",
+        "High quality audio",
+        "Priority support",
+        "Offline access"
+      ],
+      popular: true
+    },
+    {
+      name: "Enterprise",
+      price: "$29.99",
+      description: "For power users",
+      features: [
+        "Unlimited conversions",
+        "All premium voices",
+        "Ultra-high quality audio",
+        "24/7 priority support",
+        "API access",
+        "Custom voice training"
+      ]
+    }
+  ]
+
   return (
     <main className="min-h-screen bg-black text-white">
       <Navbar />
@@ -39,6 +87,29 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section className="py-20 bg-gradient-to-b from-black/90 to-black">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            Simple, Transparent
+            <span className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text"> Pricing</span>
+          </h2>
+          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+            Choose the perfect plan for your needs. All plans include our core features with different usage limits.
+          </p>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {plans.map((plan) => (
+              <PricingCard
+                key={plan.name}
+                {...plan}
+                onSelect={() => setSelectedPlan(plan)}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
       <Testimonials />
 
       {/* CTA Section */}
@@ -63,8 +134,17 @@ const Index = () => {
 
       <ChatInterface />
       <Footer />
-    </main>
-  );
-};
 
-export default Index;
+      {selectedPlan && (
+        <SubscriptionDialog
+          isOpen={!!selectedPlan}
+          onClose={() => setSelectedPlan(null)}
+          planName={selectedPlan.name}
+          planPrice={selectedPlan.price}
+        />
+      )}
+    </main>
+  )
+}
+
+export default Index
