@@ -29,7 +29,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [
           {
             role: 'system',
@@ -44,7 +44,7 @@ serve(async (req) => {
     if (!response.ok) {
       const error = await response.json();
       console.error('OpenAI API error:', error);
-      throw new Error('Failed to get response from OpenAI');
+      throw new Error(`OpenAI API error: ${error.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
@@ -59,7 +59,9 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in chat-with-gpt function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ 
+      error: error.message || 'An unexpected error occurred'
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
