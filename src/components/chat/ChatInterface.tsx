@@ -117,7 +117,7 @@ export const ChatInterface = () => {
             >
               <div className="flex items-center gap-2">
                 <Bot className="w-6 h-6" />
-                <h3 className="font-semibold">AudioMaster Assistant</h3>
+                <h3 className="font-semibold">Audiovable Assistant</h3>
               </div>
               <div className="flex items-center gap-2">
                 <Button
