@@ -75,6 +75,7 @@ const BookConversion = () => {
       const { error: dbError } = await supabase
         .from('books')
         .insert({
+          user_id: session.user.id,
           title: file.name,
           original_filename: file.name,
           file_path: filePath,
