@@ -7,7 +7,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -19,8 +18,6 @@ serve(async (req) => {
     }
 
     const { messages } = await req.json();
-
-    console.log('Processing chat request with messages:', messages);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -48,8 +45,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('Received response from OpenAI:', data);
-
+    
     return new Response(JSON.stringify({
       message: data.choices[0].message.content,
       role: 'assistant'
