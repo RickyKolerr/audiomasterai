@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { ConvertButton } from "@/components/ui/convert-button";
+import BookConversion from "@/components/conversion/BookConversion";
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -16,7 +17,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black pt-16">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-black pt-16">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-4xl mx-auto space-y-8">
           <div className="animate-fade-in [--delay-0]">
@@ -62,6 +63,13 @@ const Hero = () => {
               <p className="text-gray-400">Easily share and download your audiobooks for offline listening</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Smart Conversion Section */}
+      <div id="conversion-section" className="w-full py-20">
+        <div className="container mx-auto px-4">
+          <BookConversion />
         </div>
       </div>
     </div>

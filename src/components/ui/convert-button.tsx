@@ -22,8 +22,13 @@ export const ConvertButton = ({
     if (onClick) {
       onClick();
     } else {
-      // Default behavior: navigate to conversion section or features page
-      navigate("/features#conversion-section");
+      // If we're not on the home page, navigate to it and scroll to conversion
+      const conversionSection = document.getElementById('conversion-section');
+      if (!conversionSection) {
+        navigate('/#conversion-section');
+      } else {
+        conversionSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
