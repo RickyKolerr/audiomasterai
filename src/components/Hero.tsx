@@ -28,16 +28,16 @@ const Hero = () => {
         <div className="text-center max-w-4xl mx-auto space-y-8">
           <div className="animate-fade-in [--delay-0]">
             <h1 className="text-4xl md:text-7xl font-bold mb-6 tracking-tight">
-              {t('hero.title')}{' '}
+              {t('hero', 'title')}{' '}
               <span className="bg-gradient-to-r from-primary via-blue-500 to-accent bg-clip-text text-transparent">
                 Audiovable
               </span>
               <span className="block text-xl md:text-2xl mt-4 text-gray-400 font-normal">
-                {t('hero.subtitle')}
+                {t('hero', 'subtitle')}
               </span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 mb-8 animate-fade-in [--delay-1] max-w-2xl mx-auto">
-              {t('hero.description')}
+              {t('hero', 'description')}
             </p>
           </div>
 
@@ -53,25 +53,25 @@ const Hero = () => {
               onClick={() => navigate("/marketplace")}
             >
               <Headphones className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              {t('hero.browseButton')}
+              {t('hero', 'browseButton')}
             </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 animate-fade-in [--delay-3]">
             <div className="p-8 rounded-xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 hover:border-primary/40 transition-all duration-300 group backdrop-blur-sm">
               <Book className="w-12 h-12 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features.smartConversion')}</h3>
-              <p className="text-gray-400">{t('features.smartConversionDesc')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'smartConversion')}</h3>
+              <p className="text-gray-400">{t('features', 'smartConversionDesc')}</p>
             </div>
             <div className="p-8 rounded-xl bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group backdrop-blur-sm">
               <Settings className="w-12 h-12 text-blue-500 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features.voiceCustomization')}</h3>
-              <p className="text-gray-400">{t('features.voiceCustomizationDesc')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'voiceCustomization')}</h3>
+              <p className="text-gray-400">{t('features', 'voiceCustomizationDesc')}</p>
             </div>
             <div className="p-8 rounded-xl bg-gradient-to-br from-accent/10 to-transparent border border-accent/20 hover:border-accent/40 transition-all duration-300 group backdrop-blur-sm">
               <Headphones className="w-12 h-12 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features.shareDownload')}</h3>
-              <p className="text-gray-400">{t('features.shareDownloadDesc')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'shareDownload')}</h3>
+              <p className="text-gray-400">{t('features', 'shareDownloadDesc')}</p>
             </div>
           </div>
         </div>
