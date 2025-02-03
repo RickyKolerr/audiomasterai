@@ -17,57 +17,68 @@ const Hero = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-black pt-16">
-      <div className="container mx-auto px-4">
+    <div className="relative min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-black via-black to-accent/5">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl opacity-20" />
+        <div className="absolute top-20 -left-40 w-80 h-80 bg-accent/20 rounded-full blur-3xl opacity-20" />
+      </div>
+
+      <div className="container mx-auto px-4 pt-32 md:pt-40 relative z-10">
         <div className="text-center max-w-4xl mx-auto space-y-8">
           <div className="animate-fade-in [--delay-0]">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Transform Your Books Into{' '}
-              <span className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text">
+            <h1 className="text-4xl md:text-7xl font-bold mb-6 tracking-tight">
+              {t('hero.title')}{' '}
+              <span className="bg-gradient-to-r from-primary via-blue-500 to-accent bg-clip-text text-transparent">
                 Audiovable
               </span>
-              <span className="block text-2xl mt-2 text-gray-400">Professional Audiobook Creation Platform</span>
+              <span className="block text-xl md:text-2xl mt-4 text-gray-400 font-normal">
+                {t('hero.subtitle')}
+              </span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-300 mb-8 animate-fade-in [--delay-1]">
-              Using advanced AI technology to convert your books into high-quality audiobooks with natural-sounding voices
+            <p className="text-lg md:text-xl text-gray-300 mb-8 animate-fade-in [--delay-1] max-w-2xl mx-auto">
+              {t('hero.description')}
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in [--delay-2]">
-            <ConvertButton onClick={scrollToConversion} />
+            <ConvertButton 
+              onClick={scrollToConversion}
+              className="shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
+            />
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-pink-500 text-pink-500 hover:bg-pink-500/10 hover:text-pink-400 group"
+              className="border-accent text-accent hover:bg-accent/10 hover:text-accent-foreground group shadow-lg shadow-accent/5 hover:shadow-accent/10 transition-all duration-300"
               onClick={() => navigate("/marketplace")}
             >
               <Headphones className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              Browse Library
+              {t('hero.browseButton')}
             </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 animate-fade-in [--delay-3]">
-            <div className="p-6 rounded-xl bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 hover:border-green-500/40 transition-all duration-300 group">
-              <Book className="w-12 h-12 text-green-500 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">Smart Conversion</h3>
-              <p className="text-gray-400">Convert your books into high-quality audiobooks using advanced AI technology</p>
+            <div className="p-8 rounded-xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 hover:border-primary/40 transition-all duration-300 group backdrop-blur-sm">
+              <Book className="w-12 h-12 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features.smartConversion')}</h3>
+              <p className="text-gray-400">{t('features.smartConversionDesc')}</p>
             </div>
-            <div className="p-6 rounded-xl bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group">
+            <div className="p-8 rounded-xl bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group backdrop-blur-sm">
               <Settings className="w-12 h-12 text-blue-500 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">Voice Customization</h3>
-              <p className="text-gray-400">Customize voice, speed, and tone to create the perfect listening experience</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features.voiceCustomization')}</h3>
+              <p className="text-gray-400">{t('features.voiceCustomizationDesc')}</p>
             </div>
-            <div className="p-6 rounded-xl bg-gradient-to-br from-pink-500/10 to-transparent border border-pink-500/20 hover:border-pink-500/40 transition-all duration-300 group">
-              <Headphones className="w-12 h-12 text-pink-500 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">Share & Download</h3>
-              <p className="text-gray-400">Easily share and download your audiobooks for offline listening</p>
+            <div className="p-8 rounded-xl bg-gradient-to-br from-accent/10 to-transparent border border-accent/20 hover:border-accent/40 transition-all duration-300 group backdrop-blur-sm">
+              <Headphones className="w-12 h-12 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features.shareDownload')}</h3>
+              <p className="text-gray-400">{t('features.shareDownloadDesc')}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Smart Conversion Section */}
-      <div id="conversion-section" className="w-full py-20">
+      <div id="conversion-section" className="w-full py-20 mt-20">
         <div className="container mx-auto px-4">
           <BookConversion />
         </div>
