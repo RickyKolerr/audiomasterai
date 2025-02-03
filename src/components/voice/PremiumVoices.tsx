@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Crown, Play, Volume2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -22,7 +22,7 @@ const PremiumVoices = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  useState(() => {
+  useEffect(() => {
     fetchVoices();
   }, []);
 
