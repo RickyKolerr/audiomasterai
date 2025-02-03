@@ -1,13 +1,30 @@
-import { Headphones, Book, Settings } from "lucide-react";
+import { Headphones, Book, Settings, ChartBar, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { ConvertButton } from "@/components/ui/convert-button";
 import BookConversion from "@/components/conversion/BookConversion";
+import { Card } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Hero = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+
+  const { data: recentConversions } = useQuery({
+    queryKey: ['recentConversions'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('books')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(3);
+      
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const scrollToConversion = () => {
     const conversionSection = document.getElementById('conversion-section');
@@ -26,7 +43,7 @@ const Hero = () => {
 
       <div className="container mx-auto px-4 pt-32 md:pt-40 relative z-10">
         <div className="text-center max-w-4xl mx-auto space-y-8">
-          <div className="animate-fade-in [--delay-0]">
+          <div className="animate-fade-in">
             <h1 className="text-4xl md:text-7xl font-bold mb-6 tracking-tight">
               {t('hero', 'title')}{' '}
               <span className="bg-gradient-to-r from-primary via-blue-500 to-accent bg-clip-text text-transparent">
@@ -36,16 +53,20 @@ const Hero = () => {
                 {t('hero', 'subtitle')}
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-300 mb-8 animate-fade-in [--delay-1] max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-300 mb-8 animate-fade-in max-w-2xl mx-auto">
               {t('hero', 'description')}
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in [--delay-2]">
-            <ConvertButton 
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
+            <Button 
+              size="lg" 
               onClick={scrollToConversion}
-              className="shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
-            />
+              className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 group"
+            >
+              <Upload className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+              {t('hero', 'convertButton')}
+            </Button>
             <Button 
               size="lg" 
               variant="outline" 
@@ -57,23 +78,46 @@ const Hero = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 animate-fade-in [--delay-3]">
-            <div className="p-8 rounded-xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 hover:border-primary/40 transition-all duration-300 group backdrop-blur-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 animate-fade-in">
+            <Card className="p-8 bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 hover:border-primary/40 transition-all duration-300 group backdrop-blur-sm">
               <Book className="w-12 h-12 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
               <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'smartConversion')}</h3>
               <p className="text-gray-400">{t('features', 'smartConversionDesc')}</p>
-            </div>
-            <div className="p-8 rounded-xl bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group backdrop-blur-sm">
+            </Card>
+            
+            <Card className="p-8 bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group backdrop-blur-sm">
               <Settings className="w-12 h-12 text-blue-500 mx-auto mb-4 group-hover:scale-110 transition-transform" />
               <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'voiceCustomization')}</h3>
               <p className="text-gray-400">{t('features', 'voiceCustomizationDesc')}</p>
-            </div>
-            <div className="p-8 rounded-xl bg-gradient-to-br from-accent/10 to-transparent border border-accent/20 hover:border-accent/40 transition-all duration-300 group backdrop-blur-sm">
-              <Headphones className="w-12 h-12 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'shareDownload')}</h3>
-              <p className="text-gray-400">{t('features', 'shareDownloadDesc')}</p>
-            </div>
+            </Card>
+            
+            <Card className="p-8 bg-gradient-to-br from-accent/10 to-transparent border border-accent/20 hover:border-accent/40 transition-all duration-300 group backdrop-blur-sm">
+              <ChartBar className="w-12 h-12 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'analytics')}</h3>
+              <p className="text-gray-400">{t('features', 'analyticsDesc')}</p>
+            </Card>
           </div>
+
+          {recentConversions && recentConversions.length > 0 && (
+            <div className="mt-16 animate-fade-in">
+              <h2 className="text-2xl font-bold text-white mb-6">Recent Conversions</h2>
+              <div className="grid gap-4">
+                {recentConversions.map((conversion) => (
+                  <Card key={conversion.id} className="p-4 bg-black/50 border border-primary/20">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Book className="w-5 h-5 text-primary" />
+                        <span className="text-white">{conversion.title}</span>
+                      </div>
+                      <span className="text-sm text-gray-400">
+                        {new Date(conversion.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
