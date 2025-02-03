@@ -124,7 +124,7 @@ const Auth = () => {
             <Headphones className="w-12 h-12 text-green-500" />
           </div>
           <h2 className="text-3xl font-bold bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text">
-            AudioMaster AI
+            Audiovable
           </h2>
           <p className="mt-2 text-muted-foreground">
             Sign in to your account or create a new one
