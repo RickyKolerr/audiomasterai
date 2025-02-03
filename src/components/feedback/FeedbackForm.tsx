@@ -36,12 +36,10 @@ export const FeedbackForm = () => {
     try {
       const { error } = await supabase
         .from('feedback')
-        .insert([
-          { 
-            message: formData.message,
-            rating: formData.rating 
-          }
-        ])
+        .insert({
+          message: formData.message,
+          rating: formData.rating
+        })
 
       if (error) throw error
 

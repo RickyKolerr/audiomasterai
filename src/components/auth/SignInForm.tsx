@@ -7,12 +7,16 @@ import { useFormValidation } from "@/hooks/use-form-validation"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { supabase } from "@/integrations/supabase/client"
 
+interface SignInFormProps {
+  onForgotPassword: () => void;
+}
+
 interface SignInFormData {
   email: string
   password: string
 }
 
-export const SignInForm = () => {
+export const SignInForm = ({ onForgotPassword }: SignInFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
   const {
@@ -83,6 +87,15 @@ export const SignInForm = () => {
           <p className="text-sm text-red-500">{errors.password}</p>
         )}
       </div>
+
+      <Button 
+        type="button"
+        variant="link"
+        onClick={onForgotPassword}
+        className="px-0 text-green-500 hover:text-green-400"
+      >
+        Forgot password?
+      </Button>
 
       <Button 
         type="submit" 

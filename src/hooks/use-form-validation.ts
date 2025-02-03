@@ -1,12 +1,26 @@
 import { useState } from "react"
 import { ZodSchema } from "zod"
 
-export function useFormValidation<T>(schema: ZodSchema) {
+interface FormValidationHook<T> {
+  formData: T;
+  errors: Partial<Record<keyof T, string>>;
+  handleChange: (field: keyof T, value: any) => void;
+  validateForm: () => boolean;
+  resetForm: () => void;
+  setErrors: React.Dispatch<React.SetStateAction<Partial<Record<keyof T, string>>>>;
+}
+
+export function useFormValidation<T>(initialData: T, schema: ZodSchema): FormValidationHook<T> {
+  const [formData, setFormData] = useState<T>(initialData)
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({})
 
-  const validate = (data: T): boolean => {
+  const handleChange = (field: keyof T, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const validateForm = (): boolean => {
     try {
-      schema.parse(data)
+      schema.parse(formData)
       setErrors({})
       return true
     } catch (error: any) {
@@ -20,5 +34,10 @@ export function useFormValidation<T>(schema: ZodSchema) {
     }
   }
 
-  return { errors, validate, setErrors }
+  const resetForm = () => {
+    setFormData(initialData)
+    setErrors({})
+  }
+
+  return { formData, errors, handleChange, validateForm, resetForm, setErrors }
 }
