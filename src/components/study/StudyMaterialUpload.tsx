@@ -47,9 +47,21 @@ const StudyMaterialUpload = () => {
     }
 
     try {
+      // Get the current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to upload study materials",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const file = files[0]; // Handle one file at a time
       const fileExt = file.name.split('.').pop();
-      const filePath = `${crypto.randomUUID()}.${fileExt}`;
+      const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
       
       const { error: uploadError } = await supabase.storage
         .from('study-materials')
@@ -65,6 +77,7 @@ const StudyMaterialUpload = () => {
           file_path: filePath,
           content_type: file.type,
           file_size: file.size,
+          user_id: user.id, // Add the user_id field
         });
 
       if (dbError) throw dbError;
@@ -78,6 +91,7 @@ const StudyMaterialUpload = () => {
       setTitle("");
       setDescription("");
     } catch (error) {
+      console.error('Upload error:', error);
       toast({
         title: "Upload Failed",
         description: "There was an error uploading your study material",
