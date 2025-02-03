@@ -24,6 +24,51 @@ export type Database = {
         }
         Relationships: []
       }
+      books: {
+        Row: {
+          content_type: string
+          conversion_error: string | null
+          converted_audio_path: string | null
+          created_at: string
+          file_path: string
+          file_size: number
+          id: string
+          original_filename: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content_type: string
+          conversion_error?: string | null
+          converted_audio_path?: string | null
+          created_at?: string
+          file_path: string
+          file_size: number
+          id?: string
+          original_filename: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content_type?: string
+          conversion_error?: string | null
+          converted_audio_path?: string | null
+          created_at?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          original_filename?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           created_at: string
