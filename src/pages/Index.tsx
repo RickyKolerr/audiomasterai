@@ -6,6 +6,7 @@ import VoiceCustomization from "@/components/voice/VoiceCustomization";
 import PremiumVoices from "@/components/voice/PremiumVoices";
 import ShareDownload from "@/components/share/ShareDownload";
 import Footer from "@/components/Footer";
+import StudyMaterialSection from "@/components/study/StudyMaterialSection";
 
 const Index = () => {
   return (
@@ -17,6 +18,9 @@ const Index = () => {
       </section>
       <section id="voice-section" className="py-20 px-4 bg-black/30">
         <VoiceCustomization />
+      </section>
+      <section id="study-materials-section" className="py-20 px-4">
+        <StudyMaterialSection />
       </section>
       <PremiumVoices />
       <ShareDownload />

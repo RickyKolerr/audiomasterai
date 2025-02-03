@@ -177,6 +177,54 @@ export type Database = {
         }
         Relationships: []
       }
+      study_materials: {
+        Row: {
+          content_type: string
+          conversion_error: string | null
+          converted_audio_path: string | null
+          created_at: string
+          description: string | null
+          file_path: string
+          file_size: number
+          id: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+          voice_settings: Json | null
+        }
+        Insert: {
+          content_type: string
+          conversion_error?: string | null
+          converted_audio_path?: string | null
+          created_at?: string
+          description?: string | null
+          file_path: string
+          file_size: number
+          id?: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          voice_settings?: Json | null
+        }
+        Update: {
+          content_type?: string
+          conversion_error?: string | null
+          converted_audio_path?: string | null
+          created_at?: string
+          description?: string | null
+          file_path?: string
+          file_size?: number
+          id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          voice_settings?: Json | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
