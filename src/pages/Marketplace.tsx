@@ -1,14 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Search, BookOpen, Star, Download } from "lucide-react";
+import { Search, BookOpen, Star, Download, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Audiobook {
+  id: number;
+  title: string;
+  author: string;
+  cover: string;
+  rating: number;
+  reviews: number;
+  price: number;
+  category: string;
+}
 
 const Marketplace = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [sortBy, setSortBy] = useState<"popular" | "newest" | "price">("popular");
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const audiobooks = [
+  const categories = [
+    "All Categories",
+    "Technology",
+    "Science Fiction",
+    "Education",
+    "Business",
+    "Self-Help"
+  ];
+
+  const audiobooks: Audiobook[] = [
     {
       id: 1,
       title: "The Art of AI",
@@ -41,14 +74,34 @@ const Marketplace = () => {
     }
   ];
 
-  const categories = [
-    "All Categories",
-    "Technology",
-    "Science Fiction",
-    "Education",
-    "Business",
-    "Self-Help"
-  ];
+  const filteredBooks = audiobooks
+    .filter(book => 
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .filter(book => 
+      selectedCategory === "All Categories" ? true : book.category === selectedCategory
+    );
+
+  const handlePurchase = async (bookId: number) => {
+    const { data: session } = await supabase.auth.getSession();
+    
+    if (!session?.session) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to purchase audiobooks",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    toast({
+      title: "Purchase initiated",
+      description: "Processing your purchase...",
+    });
+    // Implement purchase logic here
+  };
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -73,21 +126,50 @@ const Marketplace = () => {
               className="pl-10 bg-white/5 border-gray-700 text-white w-full"
             />
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-2">
-            {categories.map((category, index) => (
-              <Button
-                key={index}
-                variant={index === 0 ? "default" : "outline"}
-                className="whitespace-nowrap"
-              >
-                {category}
-              </Button>
-            ))}
+          
+          <div className="flex gap-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-[150px]">
+                  <Filter className="w-4 h-4 mr-2" />
+                  {selectedCategory}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {categories.map((category) => (
+                  <DropdownMenuItem
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  Sort by: {sortBy}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setSortBy("popular")}>
+                  Most Popular
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("newest")}>
+                  Newest
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("price")}>
+                  Price
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {audiobooks.map((book) => (
+          {filteredBooks.map((book) => (
             <div
               key={book.id}
               className="bg-white/5 rounded-xl overflow-hidden border border-gray-700 hover:border-green-500/40 transition-all duration-300 transform hover:-translate-y-1 group"
@@ -116,7 +198,10 @@ const Marketplace = () => {
                 </div>
                 
                 <div className="flex gap-2">
-                  <Button className="flex-1 bg-green-500 hover:bg-green-600 text-white group-hover:scale-105 transition-transform">
+                  <Button 
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white group-hover:scale-105 transition-transform"
+                    onClick={() => handlePurchase(book.id)}
+                  >
                     <Download className="w-4 h-4 mr-2" />
                     Purchase
                   </Button>
