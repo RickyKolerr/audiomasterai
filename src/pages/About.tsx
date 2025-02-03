@@ -13,7 +13,7 @@ import {
   Microscope,
   Hammer,
   Target,
-  World,
+  Globe2,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -82,7 +82,7 @@ const About = () => {
       date: "2026 & Beyond",
       title: "Expansion & Innovation",
       description: "Multilingual support, advanced AI voice emotions, and strategic partnerships with publishers.",
-      icon: World,
+      icon: Globe2,
     },
   ];
 
