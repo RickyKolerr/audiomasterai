@@ -35,33 +35,30 @@ const Hero = () => {
 
   const trustedCompanies = [
     { 
-      name: 'Microsoft', 
-      logo: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=200&h=100&fit=crop',
-      description: 'Using our service for educational content conversion'
+      name: 'Oxford University Press', 
+      description: 'Academic publishing and digital content transformation'
     },
     { 
-      name: 'Harvard University', 
-      logo: 'https://images.unsplash.com/photo-1496307653780-42ee777d4833?w=200&h=100&fit=crop',
-      description: 'Converting academic materials into audiobooks'
+      name: 'Simon & Schuster', 
+      description: 'Digital audiobook production and distribution'
     },
     { 
-      name: 'Penguin Random House', 
-      logo: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=200&h=100&fit=crop',
-      description: 'Digital publishing partner'
+      name: 'MIT OpenCourseWare', 
+      description: 'Educational content accessibility enhancement'
     },
     { 
-      name: 'Audible', 
-      logo: 'https://images.unsplash.com/photo-1431576901776-e539bd916ba2?w=200&h=100&fit=crop',
-      description: 'Integration partner for audiobook distribution'
+      name: 'Pearson Education', 
+      description: 'Digital learning materials conversion'
     },
     { 
-      name: 'Coursera', 
-      logo: 'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=200&h=100&fit=crop',
-      description: 'Educational content conversion partner'
+      name: 'HarperCollins Publishers', 
+      description: 'Audiobook creation and distribution'
+    },
+    { 
+      name: 'Blackstone Publishing', 
+      description: 'Professional audiobook production partner'
     }
   ];
-
-  // ... keep existing code (up to the return statement)
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-black via-black to-accent/5">
@@ -115,21 +112,15 @@ const Hero = () => {
           {/* Trusted By Section */}
           <div className="mt-16 pt-8 border-t border-gray-800">
             <p className="text-sm text-gray-400 mb-6">TRUSTED BY LEADING ORGANIZATIONS</p>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-center">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 items-center justify-center">
               {trustedCompanies.map((company, index) => (
                 <div 
                   key={company.name}
-                  className="group relative flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300"
+                  className="group relative p-4 bg-black/20 rounded-lg border border-gray-800 hover:border-primary/50 transition-all duration-300"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <img
-                    src={company.logo}
-                    alt={`${company.name} logo`}
-                    className="h-12 object-contain opacity-50 group-hover:opacity-100 transition-opacity"
-                  />
-                  <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-black/90 text-white text-xs p-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    {company.description}
-                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">{company.name}</h3>
+                  <p className="text-sm text-gray-400">{company.description}</p>
                 </div>
               ))}
             </div>
