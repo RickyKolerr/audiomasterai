@@ -1,15 +1,6 @@
 import { useState } from "react";
-import { Book, Play, Search } from "lucide-react";
+import { Book, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Card,
   CardContent,
@@ -22,6 +13,8 @@ import FileUploadZone from "@/components/upload/FileUploadZone";
 import AudioPlayer from "@/components/audio/AudioPlayer";
 import { useConversionProgress } from "@/hooks/useConversionProgress";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import BookSearch from "./BookSearch";
+import ConversionProgress from "./ConversionProgress";
 
 const BookConversion = () => {
   const [selectedBook, setSelectedBook] = useState<string>("");
@@ -83,10 +76,6 @@ const BookConversion = () => {
     }
   };
 
-  const filteredBooks = availableBooks.filter((book) =>
-    book.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
@@ -99,38 +88,19 @@ const BookConversion = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search available books..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8"
-              />
-            </div>
-          </div>
+        <BookSearch
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          selectedBook={selectedBook}
+          onBookSelect={setSelectedBook}
+          availableBooks={availableBooks}
+        />
 
-          <Select value={selectedBook} onValueChange={setSelectedBook}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a book" />
-            </SelectTrigger>
-            <SelectContent>
-              {filteredBooks.map((book) => (
-                <SelectItem key={book.id} value={book.id}>
-                  {book.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <FileUploadZone
-            onFileSelect={handleFileSelect}
-            acceptedFileTypes={[".pdf", ".txt"]}
-            maxSizeMB={20}
-          />
-        </div>
+        <FileUploadZone
+          onFileSelect={handleFileSelect}
+          acceptedFileTypes={[".pdf", ".txt"]}
+          maxSizeMB={20}
+        />
 
         <div className="space-y-4">
           <Button
@@ -155,21 +125,11 @@ const BookConversion = () => {
             />
           )}
 
-          {progress.status === "processing" && (
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Converting book to audio...</span>
-                <span>{progress.progress}%</span>
-              </div>
-              <Progress value={progress.progress} className="h-2" />
-            </div>
-          )}
-
-          {progress.status === "error" && (
-            <div className="text-red-500 text-sm">
-              {progress.error}
-            </div>
-          )}
+          <ConversionProgress
+            status={progress.status}
+            progress={progress.progress}
+            error={progress.error}
+          />
         </div>
       </CardContent>
     </Card>
