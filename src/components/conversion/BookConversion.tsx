@@ -18,6 +18,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const BookConversion = () => {
   const [selectedBook, setSelectedBook] = useState<string>("");
@@ -26,14 +28,20 @@ const BookConversion = () => {
   const [progress, setProgress] = useState(0);
   const { toast } = useToast();
 
-  // Mock data - replace with real API data later
-  const availableBooks = [
-    { id: "1", title: "The Great Gatsby" },
-    { id: "2", title: "1984" },
-    { id: "3", title: "Pride and Prejudice" },
-  ];
+  const { data: books, isLoading } = useQuery({
+    queryKey: ["books"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("books")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       // Validate file type
@@ -47,15 +55,46 @@ const BookConversion = () => {
         return;
       }
 
-      // Mock upload success - replace with real upload logic later
-      toast({
-        title: "File Uploaded",
-        description: `Successfully uploaded ${file.name}`,
-      });
+      try {
+        // Upload file to Supabase Storage
+        const fileExt = file.name.split('.').pop();
+        const filePath = `${crypto.randomUUID()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('books')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        // Create book record in database
+        const { error: dbError } = await supabase
+          .from('books')
+          .insert({
+            title: file.name.split('.')[0],
+            original_filename: file.name,
+            file_path: filePath,
+            content_type: file.type,
+            file_size: file.size,
+          });
+
+        if (dbError) throw dbError;
+
+        toast({
+          title: "File Uploaded",
+          description: `Successfully uploaded ${file.name}`,
+        });
+      } catch (error) {
+        console.error('Upload error:', error);
+        toast({
+          title: "Upload Failed",
+          description: "There was an error uploading your file",
+          variant: "destructive",
+        });
+      }
     }
   };
 
-  const startConversion = () => {
+  const startConversion = async () => {
     if (!selectedBook) {
       toast({
         title: "No Book Selected",
@@ -68,24 +107,40 @@ const BookConversion = () => {
     setIsConverting(true);
     setProgress(0);
 
-    // Mock conversion progress - replace with real conversion logic later
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsConverting(false);
-          toast({
-            title: "Conversion Complete",
-            description: "Your audiobook is ready!",
-          });
-          return 100;
-        }
-        return prev + 10;
+    try {
+      // Update book status to processing
+      await supabase
+        .from('books')
+        .update({ status: 'processing' })
+        .eq('id', selectedBook);
+
+      // Mock conversion progress - replace with real conversion logic later
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setIsConverting(false);
+            toast({
+              title: "Conversion Complete",
+              description: "Your audiobook is ready!",
+            });
+            return 100;
+          }
+          return prev + 10;
+        });
+      }, 1000);
+    } catch (error) {
+      console.error('Conversion error:', error);
+      setIsConverting(false);
+      toast({
+        title: "Conversion Failed",
+        description: "There was an error converting your book",
+        variant: "destructive",
       });
-    }, 1000);
+    }
   };
 
-  const filteredBooks = availableBooks.filter((book) =>
+  const filteredBooks = books?.filter((book) =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -135,11 +190,21 @@ const BookConversion = () => {
               <SelectValue placeholder="Select a book" />
             </SelectTrigger>
             <SelectContent>
-              {filteredBooks.map((book) => (
-                <SelectItem key={book.id} value={book.id}>
-                  {book.title}
+              {isLoading ? (
+                <SelectItem value="loading" disabled>
+                  Loading books...
                 </SelectItem>
-              ))}
+              ) : filteredBooks?.length === 0 ? (
+                <SelectItem value="none" disabled>
+                  No books found
+                </SelectItem>
+              ) : (
+                filteredBooks?.map((book) => (
+                  <SelectItem key={book.id} value={book.id}>
+                    {book.title}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         </div>
