@@ -1,11 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Activity, CreditCard, DollarSign, Users, FileText, Settings, Bell } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import DashboardNav from "@/components/dashboard/DashboardNav"
-import RecentActivity from "@/components/dashboard/RecentActivity"
-import AnalyticsChart from "@/components/dashboard/AnalyticsChart"
-import { useSubscription } from "@/hooks/useSubscription"
+import { Card } from "@/components/ui/card";
+import { Activity, CreditCard, DollarSign, Users, FileText, Settings } from "lucide-react";
+import DashboardNav from "@/components/dashboard/DashboardNav";
+import RecentActivity from "@/components/dashboard/RecentActivity";
+import AnalyticsChart from "@/components/dashboard/AnalyticsChart";
+import UsageStatistics from "@/components/dashboard/UsageStatistics";
+import ActivityLogs from "@/components/dashboard/ActivityLogs";
+import DownloadHistory from "@/components/downloads/DownloadHistory";
+import SubscriptionPlans from "@/components/subscription/SubscriptionPlans";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const Dashboard = () => {
   const { subscription } = useSubscription();
@@ -21,44 +23,54 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          {[
-            { title: "Total Users", value: "1,234", icon: Users, trend: "+12.3%" },
-            { title: "Active Projects", value: "23", icon: FileText, trend: "+4.5%" },
-            { title: "Revenue", value: "$12,345", icon: DollarSign, trend: "+8.7%" },
-            { title: "Subscriptions", value: "321", icon: CreditCard, trend: "+2.4%" },
-          ].map((item, index) => (
-            <Card key={index} className="bg-black/50 border border-green-500/20">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-400">{item.title}</CardTitle>
-                <item.icon className="h-4 w-4 text-green-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">{item.value}</div>
-                <p className="text-xs text-green-500">{item.trend} from last month</p>
-              </CardContent>
+        <div className="space-y-8">
+          <UsageStatistics />
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <ActivityLogs />
+            <DownloadHistory />
+          </div>
+
+          <Card className="p-6 bg-black/50 border border-green-500/20">
+            <h2 className="text-2xl font-bold text-white mb-6">Subscription Plans</h2>
+            <SubscriptionPlans />
+          </Card>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
+            {[
+              { title: "Total Users", value: "1,234", icon: Users, trend: "+12.3%" },
+              { title: "Active Projects", value: "23", icon: FileText, trend: "+4.5%" },
+              { title: "Revenue", value: "$12,345", icon: DollarSign, trend: "+8.7%" },
+              { title: "Subscriptions", value: "321", icon: CreditCard, trend: "+2.4%" },
+            ].map((item, index) => (
+              <Card key={index} className="bg-black/50 border border-green-500/20">
+                <div className="p-6">
+                  <div className="flex items-center justify-between pb-2">
+                    <h3 className="text-sm font-medium text-gray-400">{item.title}</h3>
+                    <item.icon className="h-4 w-4 text-green-500" />
+                  </div>
+                  <div className="text-2xl font-bold text-white">{item.value}</div>
+                  <p className="text-xs text-green-500">{item.trend} from last month</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card className="col-span-2 bg-black/50 border border-green-500/20">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-white mb-4">Analytics Overview</h2>
+                <AnalyticsChart />
+              </div>
             </Card>
-          ))}
-        </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
-          <Card className="col-span-2 bg-black/50 border border-green-500/20">
-            <CardHeader>
-              <CardTitle className="text-white">Analytics Overview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AnalyticsChart />
-            </CardContent>
-          </Card>
-
-          <Card className="bg-black/50 border border-green-500/20">
-            <CardHeader>
-              <CardTitle className="text-white">Recent Activity</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <RecentActivity />
-            </CardContent>
-          </Card>
+            <Card className="bg-black/50 border border-green-500/20">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-white mb-4">Recent Activity</h2>
+                <RecentActivity />
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
