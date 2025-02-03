@@ -152,6 +152,8 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           id: string
+          last_conversion_reset: string | null
+          monthly_conversions_used: number | null
           stripe_customer_id: string | null
           subscription_id: string | null
           subscription_plan: string | null
@@ -162,6 +164,8 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           id: string
+          last_conversion_reset?: string | null
+          monthly_conversions_used?: number | null
           stripe_customer_id?: string | null
           subscription_id?: string | null
           subscription_plan?: string | null
@@ -172,6 +176,8 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           id?: string
+          last_conversion_reset?: string | null
+          monthly_conversions_used?: number | null
           stripe_customer_id?: string | null
           subscription_id?: string | null
           subscription_plan?: string | null
