@@ -45,16 +45,16 @@ const Hero = () => {
         <div className="text-center max-w-4xl mx-auto space-y-8">
           <div className="animate-fade-in">
             <h1 className="text-4xl md:text-7xl font-bold mb-6 tracking-tight">
-              {t('hero', 'title')}{' '}
+              Transform Your Books into{' '}
               <span className="bg-gradient-to-r from-primary via-blue-500 to-accent bg-clip-text text-transparent">
-                Audiovable
+                Professional Audio
               </span>
               <span className="block text-xl md:text-2xl mt-4 text-gray-400 font-normal">
-                {t('hero', 'subtitle')}
+                Create high-quality audiobooks with AI-powered voice technology
               </span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 mb-8 animate-fade-in max-w-2xl mx-auto">
-              {t('hero', 'description')}
+              Convert any book into a professionally narrated audiobook with customizable voices and natural-sounding speech
             </p>
           </div>
 
@@ -65,7 +65,7 @@ const Hero = () => {
               className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 group"
             >
               <Upload className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              {t('hero', 'convertButton')}
+              Convert Now
             </Button>
             <Button 
               size="lg" 
@@ -74,27 +74,27 @@ const Hero = () => {
               onClick={() => navigate("/marketplace")}
             >
               <Headphones className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              {t('hero', 'browseButton')}
+              Browse Library
             </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 animate-fade-in">
             <Card className="p-8 bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 hover:border-primary/40 transition-all duration-300 group backdrop-blur-sm">
               <Book className="w-12 h-12 text-primary mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'smartConversion')}</h3>
-              <p className="text-gray-400">{t('features', 'smartConversionDesc')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Smart Conversion</h3>
+              <p className="text-gray-400">Advanced AI technology converts your books into natural-sounding audiobooks with high accuracy and clarity.</p>
             </Card>
             
             <Card className="p-8 bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group backdrop-blur-sm">
               <Settings className="w-12 h-12 text-blue-500 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'voiceCustomization')}</h3>
-              <p className="text-gray-400">{t('features', 'voiceCustomizationDesc')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Voice Customization</h3>
+              <p className="text-gray-400">Choose from multiple premium voices and customize pitch, speed, and tone to match your preferences.</p>
             </Card>
             
             <Card className="p-8 bg-gradient-to-br from-accent/10 to-transparent border border-accent/20 hover:border-accent/40 transition-all duration-300 group backdrop-blur-sm">
               <ChartBar className="w-12 h-12 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'analytics')}</h3>
-              <p className="text-gray-400">{t('features', 'analyticsDesc')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Analytics</h3>
+              <p className="text-gray-400">Track conversion progress, monitor usage, and get insights into your audiobook creation process.</p>
             </Card>
           </div>
 
