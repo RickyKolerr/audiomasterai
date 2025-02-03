@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { FormField } from "@/components/ui/form-field"
 import { useToast } from "@/hooks/use-toast"
 import { signUpSchema } from "@/lib/validations/form-schemas"
 import { useFormValidation } from "@/hooks/use-form-validation"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { supabase } from "@/integrations/supabase/client"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 interface SignUpFormData {
   email: string
@@ -20,7 +20,7 @@ export const SignUpForm = () => {
     formData,
     errors,
     handleChange,
-    validateForm,
+    validateForm
   } = useFormValidation<SignUpFormData>(
     { email: "", password: "", confirmPassword: "" },
     signUpSchema
@@ -47,7 +47,7 @@ export const SignUpForm = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to create account. Please try again.",
+        description: "Failed to sign up. Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -57,48 +57,33 @@ export const SignUpForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => handleChange("email", e.target.value)}
-          disabled={isSubmitting}
-          className={errors.email ? "border-red-500" : ""}
-        />
-        {errors.email && (
-          <p className="text-sm text-red-500">{errors.email}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Input
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={(e) => handleChange("password", e.target.value)}
-          disabled={isSubmitting}
-          className={errors.password ? "border-red-500" : ""}
-        />
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Input
-          type="password"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={(e) => handleChange("confirmPassword", e.target.value)}
-          disabled={isSubmitting}
-          className={errors.confirmPassword ? "border-red-500" : ""}
-        />
-        {errors.confirmPassword && (
-          <p className="text-sm text-red-500">{errors.confirmPassword}</p>
-        )}
-      </div>
-
+      <FormField
+        label="Email"
+        type="email"
+        id="email"
+        value={formData.email}
+        onChange={(e) => handleChange("email", e.target.value)}
+        error={errors.email}
+        disabled={isSubmitting}
+      />
+      <FormField
+        label="Password"
+        type="password"
+        id="password"
+        value={formData.password}
+        onChange={(e) => handleChange("password", e.target.value)}
+        error={errors.password}
+        disabled={isSubmitting}
+      />
+      <FormField
+        label="Confirm Password"
+        type="password"
+        id="confirmPassword"
+        value={formData.confirmPassword}
+        onChange={(e) => handleChange("confirmPassword", e.target.value)}
+        error={errors.confirmPassword}
+        disabled={isSubmitting}
+      />
       <Button 
         type="submit" 
         disabled={isSubmitting}
@@ -107,7 +92,7 @@ export const SignUpForm = () => {
         {isSubmitting ? (
           <>
             <LoadingSpinner size="sm" className="mr-2" />
-            Creating Account...
+            Signing up...
           </>
         ) : (
           "Sign Up"
