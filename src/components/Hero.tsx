@@ -34,12 +34,34 @@ const Hero = () => {
   };
 
   const trustedCompanies = [
-    { name: 'TechCrunch', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' },
-    { name: 'Forbes', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' },
-    { name: 'Wired', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' },
-    { name: 'Bloomberg', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' },
-    { name: 'The Verge', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' }
+    { 
+      name: 'Microsoft', 
+      logo: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=200&h=100&fit=crop',
+      description: 'Using our service for educational content conversion'
+    },
+    { 
+      name: 'Harvard University', 
+      logo: 'https://images.unsplash.com/photo-1496307653780-42ee777d4833?w=200&h=100&fit=crop',
+      description: 'Converting academic materials into audiobooks'
+    },
+    { 
+      name: 'Penguin Random House', 
+      logo: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=200&h=100&fit=crop',
+      description: 'Digital publishing partner'
+    },
+    { 
+      name: 'Audible', 
+      logo: 'https://images.unsplash.com/photo-1431576901776-e539bd916ba2?w=200&h=100&fit=crop',
+      description: 'Integration partner for audiobook distribution'
+    },
+    { 
+      name: 'Coursera', 
+      logo: 'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=200&h=100&fit=crop',
+      description: 'Educational content conversion partner'
+    }
   ];
+
+  // ... keep existing code (up to the return statement)
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-black via-black to-accent/5">
@@ -92,19 +114,22 @@ const Hero = () => {
 
           {/* Trusted By Section */}
           <div className="mt-16 pt-8 border-t border-gray-800">
-            <p className="text-sm text-gray-400 mb-6">TRUSTED BY LEADING COMPANIES</p>
+            <p className="text-sm text-gray-400 mb-6">TRUSTED BY LEADING ORGANIZATIONS</p>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-center">
               {trustedCompanies.map((company, index) => (
                 <div 
                   key={company.name}
-                  className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300"
+                  className="group relative flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <img
                     src={company.logo}
                     alt={`${company.name} logo`}
-                    className="h-8 object-contain opacity-50 hover:opacity-100 transition-opacity"
+                    className="h-12 object-contain opacity-50 group-hover:opacity-100 transition-opacity"
                   />
+                  <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-black/90 text-white text-xs p-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    {company.description}
+                  </div>
                 </div>
               ))}
             </div>
@@ -153,7 +178,6 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Smart Conversion Section */}
       <div id="conversion-section" className="w-full py-20 mt-20">
         <div className="container mx-auto px-4">
           <BookConversion />
