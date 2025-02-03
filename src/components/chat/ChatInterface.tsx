@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   id: string;
@@ -20,8 +21,26 @@ export const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check authentication status
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -31,6 +50,16 @@ export const ChatInterface = () => {
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
+
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to use the chat feature.",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -109,7 +138,7 @@ export const ChatInterface = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to get response from AI assistant. Please try again.",
+        description: error.message || "Failed to get response from AI assistant. Please try again.",
       });
     } finally {
       setIsTyping(false);
@@ -188,8 +217,23 @@ export const ChatInterface = () => {
               >
                 {messages.length === 0 && (
                   <div className="text-center text-gray-500 mt-4">
-                    <p>👋 Hi! I'm your AudioMaster Assistant.</p>
-                    <p className="mt-2">How can I help you today?</p>
+                    {isAuthenticated ? (
+                      <>
+                        <p>👋 Hi! I'm your AudioMaster Assistant.</p>
+                        <p className="mt-2">How can I help you today?</p>
+                      </>
+                    ) : (
+                      <>
+                        <p>Please sign in to use the chat feature.</p>
+                        <Button 
+                          variant="default" 
+                          className="mt-4"
+                          onClick={() => navigate("/auth")}
+                        >
+                          Sign In
+                        </Button>
+                      </>
+                    )}
                   </div>
                 )}
                 {messages.map((message, index) => (
@@ -225,6 +269,7 @@ export const ChatInterface = () => {
               onChange={setInput}
               onSend={handleSendMessage}
               onKeyPress={handleKeyPress}
+              disabled={!isAuthenticated}
             />
           </motion.div>
         )}
