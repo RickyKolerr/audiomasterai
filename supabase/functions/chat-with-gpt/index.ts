@@ -49,10 +49,7 @@ serve(async (req) => {
         model: 'gpt-4o-mini',
         messages: [
           systemMessage,
-          ...messages.map(msg => ({
-            role: msg.role,
-            content: msg.content
-          }))
+          ...messages
         ],
         temperature: 0.7,
       }),

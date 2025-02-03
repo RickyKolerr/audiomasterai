@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { MessageCircle, Minimize2, X, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
@@ -44,17 +44,25 @@ export const ChatInterface = () => {
     setIsTyping(true);
 
     try {
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id;
+
+      if (!userId) {
+        throw new Error("User not authenticated");
+      }
+
       // Store the user message in Supabase
       const { error: insertError } = await supabase
         .from('chatbot_conversations')
         .insert({
           message: input,
-          response: '', // Will be updated after AI responds
-          user_id: (await supabase.auth.getUser()).data.user?.id,
+          response: '',
+          user_id: userId,
         });
 
       if (insertError) throw insertError;
 
+      // Call the edge function
       const { data, error } = await supabase.functions.invoke('chat-with-gpt', {
         body: {
           messages: [
@@ -67,7 +75,14 @@ export const ChatInterface = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error('Failed to get AI response');
+      }
+
+      if (!data?.message) {
+        throw new Error('No response from AI');
+      }
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -84,7 +99,7 @@ export const ChatInterface = () => {
           resolved: true 
         })
         .eq('message', input)
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id);
+        .eq('user_id', userId);
 
       if (updateError) throw updateError;
 
@@ -194,56 +209,12 @@ export const ChatInterface = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-2"
                   >
-                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-green-500" />
-                    </div>
-                    <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
-                      <div className="flex gap-1">
-                        <motion.span
-                          animate={{
-                            scale: [1, 1.2, 1],
-                            opacity: [0.4, 1, 0.4]
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            repeatType: "loop",
-                            times: [0, 0.5, 1]
-                          }}
-                          className="w-2 h-2 bg-gray-400 rounded-full"
-                        />
-                        <motion.span
-                          animate={{
-                            scale: [1, 1.2, 1],
-                            opacity: [0.4, 1, 0.4]
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            repeatType: "loop",
-                            times: [0, 0.5, 1],
-                            delay: 0.2
-                          }}
-                          className="w-2 h-2 bg-gray-400 rounded-full"
-                        />
-                        <motion.span
-                          animate={{
-                            scale: [1, 1.2, 1],
-                            opacity: [0.4, 1, 0.4]
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            repeatType: "loop",
-                            times: [0, 0.5, 1],
-                            delay: 0.4
-                          }}
-                          className="w-2 h-2 bg-gray-400 rounded-full"
-                        />
-                      </div>
-                    </div>
+                    <ChatMessage
+                      content="..."
+                      role="assistant"
+                      isLoading={true}
+                    />
                   </motion.div>
                 )}
               </motion.div>
