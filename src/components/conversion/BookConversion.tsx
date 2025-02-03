@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Book, Upload, Play, Search } from "lucide-react";
+import { Book, Play, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import FileUploadZone from "@/components/upload/FileUploadZone";
 
 const BookConversion = () => {
   const [selectedBook, setSelectedBook] = useState<string>("");
@@ -33,26 +34,23 @@ const BookConversion = () => {
     { id: "3", title: "Pride and Prejudice" },
   ];
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Validate file type
-      const validTypes = ['application/pdf', 'text/plain'];
-      if (!validTypes.includes(file.type)) {
-        toast({
-          title: "Invalid File Type",
-          description: "Please upload a PDF or TXT file",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Mock upload success - replace with real upload logic later
+  const handleFileSelect = (file: File) => {
+    // Validate file type
+    const validTypes = ['application/pdf', 'text/plain'];
+    if (!validTypes.includes(file.type)) {
       toast({
-        title: "File Uploaded",
-        description: `Successfully uploaded ${file.name}`,
+        title: "Invalid File Type",
+        description: "Please upload a PDF or TXT file",
+        variant: "destructive",
       });
+      return;
     }
+
+    // Mock upload success - replace with real upload logic later
+    toast({
+      title: "File Uploaded",
+      description: `Successfully uploaded ${file.name}`,
+    });
   };
 
   const startConversion = () => {
@@ -113,21 +111,6 @@ const BookConversion = () => {
                 className="pl-8"
               />
             </div>
-            <div className="relative">
-              <input
-                type="file"
-                accept=".pdf,.txt"
-                onChange={handleFileUpload}
-                className="hidden"
-                id="file-upload"
-              />
-              <Button asChild variant="outline">
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload
-                </label>
-              </Button>
-            </div>
           </div>
 
           <Select value={selectedBook} onValueChange={setSelectedBook}>
@@ -142,6 +125,12 @@ const BookConversion = () => {
               ))}
             </SelectContent>
           </Select>
+
+          <FileUploadZone
+            onFileSelect={handleFileSelect}
+            acceptedFileTypes={[".pdf", ".txt"]}
+            maxSizeMB={20}
+          />
         </div>
 
         {/* Conversion Progress */}
