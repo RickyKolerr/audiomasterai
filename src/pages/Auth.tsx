@@ -6,19 +6,44 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/components/ui/use-toast"
-import { Headphones } from "lucide-react"
+import { Headphones, Loader2, Mail } from "lucide-react"
+import { z } from "zod"
+
+const authSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+})
 
 const Auth = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const navigate = useNavigate()
   const { toast } = useToast()
 
+  const validateForm = () => {
+    try {
+      authSchema.parse({ email, password })
+      setErrors({})
+      return true
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors = {}
+        error.errors.forEach((err) => {
+          formattedErrors[err.path[0]] = err.message
+        })
+        setErrors(formattedErrors)
+      }
+      return false
+    }
+  }
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!validateForm()) return
+
     setLoading(true)
-    
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -41,8 +66,9 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!validateForm()) return
+
     setLoading(true)
-    
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -55,14 +81,44 @@ const Auth = () => {
         description: error.message,
       })
     } else {
+      toast({
+        title: "Welcome back!",
+        description: "Successfully signed in.",
+      })
       navigate("/dashboard")
     }
     setLoading(false)
   }
 
+  const handleResetPassword = async () => {
+    if (!email) {
+      setErrors({ email: "Please enter your email address" })
+      return
+    }
+
+    setLoading(true)
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    })
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      })
+    } else {
+      toast({
+        title: "Check your email",
+        description: "We've sent you a password reset link.",
+      })
+    }
+    setLoading(false)
+  }
+
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/95 flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-8 animate-fade-in">
         <div className="text-center">
           <div className="flex justify-center mb-4">
             <Headphones className="w-12 h-12 text-green-500" />
@@ -70,15 +126,15 @@ const Auth = () => {
           <h2 className="text-3xl font-bold bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text">
             AudioMaster AI
           </h2>
-          <p className="mt-2 text-gray-400">
+          <p className="mt-2 text-muted-foreground">
             Sign in to your account or create a new one
           </p>
         </div>
 
         <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-black/50">
-            <TabsTrigger value="signin" className="data-[state=active]:bg-green-500">Sign In</TabsTrigger>
-            <TabsTrigger value="signup" className="data-[state=active]:bg-green-500">Sign Up</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="signin">Sign In</TabsTrigger>
+            <TabsTrigger value="signup">Sign Up</TabsTrigger>
           </TabsList>
 
           <TabsContent value="signin">
@@ -91,8 +147,11 @@ const Auth = () => {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
+                  className={errors.email ? "border-red-500" : ""}
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="signin-password">Password</Label>
@@ -102,15 +161,31 @@ const Auth = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
+                  className={errors.password ? "border-red-500" : ""}
                 />
+                {errors.password && (
+                  <p className="text-sm text-red-500">{errors.password}</p>
+                )}
               </div>
+              <Button
+                type="button"
+                variant="link"
+                onClick={handleResetPassword}
+                className="px-0 text-green-500 hover:text-green-400"
+              >
+                Forgot password?
+              </Button>
               <Button 
                 type="submit" 
-                className="w-full bg-green-500 hover:bg-green-600"
+                className="w-full"
                 disabled={loading}
               >
-                {loading ? "Signing in..." : "Sign In"}
+                {loading ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Mail className="w-4 h-4 mr-2" />
+                )}
+                Sign In
               </Button>
             </form>
           </TabsContent>
@@ -125,8 +200,11 @@ const Auth = () => {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
+                  className={errors.email ? "border-red-500" : ""}
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="signup-password">Password</Label>
@@ -136,15 +214,23 @@ const Auth = () => {
                   placeholder="Create a password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
+                  className={errors.password ? "border-red-500" : ""}
                 />
+                {errors.password && (
+                  <p className="text-sm text-red-500">{errors.password}</p>
+                )}
               </div>
               <Button 
                 type="submit" 
-                className="w-full bg-green-500 hover:bg-green-600"
+                className="w-full"
                 disabled={loading}
               >
-                {loading ? "Creating account..." : "Create Account"}
+                {loading ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Mail className="w-4 h-4 mr-2" />
+                )}
+                Create Account
               </Button>
             </form>
           </TabsContent>
