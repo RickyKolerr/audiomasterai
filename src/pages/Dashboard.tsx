@@ -5,15 +5,20 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import DashboardNav from "@/components/dashboard/DashboardNav"
 import RecentActivity from "@/components/dashboard/RecentActivity"
 import AnalyticsChart from "@/components/dashboard/AnalyticsChart"
+import { useSubscription } from "@/hooks/useSubscription"
 
 const Dashboard = () => {
+  const { subscription } = useSubscription();
+
   return (
     <div className="min-h-screen bg-black">
       <DashboardNav />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome back, User!</h1>
-          <p className="text-gray-400">Here's what's happening with your account today.</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome back!</h1>
+          <p className="text-gray-400">
+            Current Plan: {subscription.plan?.charAt(0).toUpperCase() + subscription.plan?.slice(1) || "Free"}
+          </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -57,7 +62,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

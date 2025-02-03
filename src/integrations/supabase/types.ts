@@ -233,7 +233,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      subscription_plan_type: "free" | "pro" | "enterprise"
     }
     CompositeTypes: {
       [_ in never]: never
