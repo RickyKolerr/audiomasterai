@@ -31,9 +31,15 @@ const BookConversion = () => {
   const { data: books, isLoading } = useQuery({
     queryKey: ["books"],
     queryFn: async () => {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session?.session?.user?.id) {
+        throw new Error("User not authenticated");
+      }
+
       const { data, error } = await supabase
         .from("books")
         .select("*")
+        .eq("user_id", session.session.user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -56,6 +62,17 @@ const BookConversion = () => {
       }
 
       try {
+        // Get current user
+        const { data: session } = await supabase.auth.getSession();
+        if (!session?.session?.user?.id) {
+          toast({
+            title: "Authentication Required",
+            description: "Please sign in to upload books",
+            variant: "destructive",
+          });
+          return;
+        }
+
         // Upload file to Supabase Storage
         const fileExt = file.name.split('.').pop();
         const filePath = `${crypto.randomUUID()}.${fileExt}`;
@@ -75,6 +92,7 @@ const BookConversion = () => {
             file_path: filePath,
             content_type: file.type,
             file_size: file.size,
+            user_id: session.session.user.id, // Add the user_id here
           });
 
         if (dbError) throw dbError;
