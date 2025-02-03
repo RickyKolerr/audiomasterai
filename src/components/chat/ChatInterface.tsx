@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, Send, Minimize2, X, Bot, User } from "lucide-react";
+import { MessageCircle, Minimize2, X, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ChatMessage } from "./ChatMessage";
+import { ChatInput } from "./ChatInput";
 
 interface Message {
   id: string;
@@ -21,14 +22,10 @@ export const ChatInterface = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const scrollToBottom = () => {
+  useEffect(() => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
-  };
-
-  useEffect(() => {
-    scrollToBottom();
   }, [messages]);
 
   const handleSendMessage = async () => {
@@ -129,42 +126,18 @@ export const ChatInterface = () => {
           <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
             <div className="space-y-4">
               {messages.map((message) => (
-                <div
+                <ChatMessage
                   key={message.id}
-                  className={`flex items-start gap-2 ${
-                    message.role === "user" ? "flex-row-reverse" : ""
-                  }`}
-                >
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      message.role === "assistant"
-                        ? "bg-green-100 text-green-500"
-                        : "bg-blue-100 text-blue-500"
-                    }`}
-                  >
-                    {message.role === "assistant" ? (
-                      <Bot className="w-4 h-4" />
-                    ) : (
-                      <User className="w-4 h-4" />
-                    )}
-                  </div>
-                  <div
-                    className={`max-w-[70%] rounded-lg p-3 ${
-                      message.role === "assistant"
-                        ? "bg-gray-100"
-                        : "bg-green-500 text-white"
-                    }`}
-                  >
-                    {message.content}
-                  </div>
-                </div>
+                  content={message.content}
+                  role={message.role}
+                />
               ))}
               {isTyping && (
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
                     <Bot className="w-4 h-4 text-green-500" />
                   </div>
-                  <div className="bg-gray-100 rounded-lg p-3">
+                  <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
                     <div className="flex gap-1">
                       <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
                       <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]" />
@@ -176,23 +149,12 @@ export const ChatInterface = () => {
             </div>
           </ScrollArea>
 
-          <div className="p-4 border-t">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Type your message..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="flex-1"
-              />
-              <Button
-                onClick={handleSendMessage}
-                className="bg-green-500 hover:bg-green-600"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
+          <ChatInput
+            value={input}
+            onChange={setInput}
+            onSend={handleSendMessage}
+            onKeyPress={handleKeyPress}
+          />
         </div>
       )}
     </div>
