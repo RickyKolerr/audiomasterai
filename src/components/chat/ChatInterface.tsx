@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   id: string;
@@ -44,17 +45,39 @@ export const ChatInterface = () => {
     setInput("");
     setIsTyping(true);
 
-    // Placeholder for API integration
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.functions.invoke('chat-with-gpt', {
+        body: {
+          messages: [
+            ...messages.map(msg => ({
+              role: msg.role,
+              content: msg.content
+            })),
+            { role: 'user', content: input }
+          ]
+        }
+      });
+
+      if (error) throw error;
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "This is a placeholder response. GPT API will be integrated here.",
+        content: data.message,
         role: "assistant",
         timestamp: new Date(),
       };
+
       setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error('Error calling GPT function:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to get response from AI assistant. Please try again.",
+      });
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -74,8 +97,7 @@ export const ChatInterface = () => {
           <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform" />
         </Button>
       ) : (
-        <div className="bg-white rounded-lg shadow-xl w-[380px] h-[600px] flex flex-col animate-fade-in">
-          {/* Header */}
+        <div className="bg-background rounded-lg shadow-xl w-[380px] h-[600px] flex flex-col animate-fade-in">
           <div className="p-4 border-b flex items-center justify-between bg-green-500 text-white rounded-t-lg">
             <div className="flex items-center gap-2">
               <Bot className="w-6 h-6" />
@@ -104,7 +126,6 @@ export const ChatInterface = () => {
             </div>
           </div>
 
-          {/* Messages */}
           <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
             <div className="space-y-4">
               {messages.map((message) => (
@@ -155,7 +176,6 @@ export const ChatInterface = () => {
             </div>
           </ScrollArea>
 
-          {/* Input */}
           <div className="p-4 border-t">
             <div className="flex gap-2">
               <Input
