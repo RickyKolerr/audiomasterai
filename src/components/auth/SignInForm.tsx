@@ -1,87 +1,102 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Facebook } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
+import { signInSchema } from "@/lib/validations/form-schemas"
+import { useFormValidation } from "@/hooks/use-form-validation"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { supabase } from "@/integrations/supabase/client"
 
-interface SignInFormProps {
-  onForgotPassword: () => void
+interface SignInFormData {
+  email: string
+  password: string
 }
 
-const SignInForm = ({ onForgotPassword }: SignInFormProps) => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+export const SignInForm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
+  const {
+    formData,
+    errors,
+    handleChange,
+    validateForm,
+  } = useFormValidation<SignInFormData>(
+    { email: "", password: "" },
+    signInSchema
+  )
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Mock sign in
-    toast({
-      title: "Sign in successful!",
-      description: "Welcome back to AudioMaster AI",
-    })
-  }
+    
+    if (!validateForm()) return
 
-  const handleFacebookLogin = () => {
-    // Mock Facebook login
-    toast({
-      title: "Facebook login",
-      description: "Facebook authentication will be implemented later",
-    })
+    setIsSubmitting(true)
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      })
+
+      if (error) throw error
+
+      toast({
+        title: "Success",
+        description: "You have been signed in successfully.",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign in. Please check your credentials.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 py-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
         <Input
-          id="email"
           type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+          placeholder="Email"
+          value={formData.email}
+          onChange={(e) => handleChange("email", e.target.value)}
+          disabled={isSubmitting}
+          className={errors.email ? "border-red-500" : ""}
         />
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email}</p>
+        )}
       </div>
+
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
         <Input
-          id="password"
           type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          placeholder="Password"
+          value={formData.password}
+          onChange={(e) => handleChange("password", e.target.value)}
+          disabled={isSubmitting}
+          className={errors.password ? "border-red-500" : ""}
         />
+        {errors.password && (
+          <p className="text-sm text-red-500">{errors.password}</p>
+        )}
       </div>
-      <Button
-        type="button"
-        variant="link"
-        onClick={onForgotPassword}
-        className="px-0 text-green-500 hover:text-green-400"
+
+      <Button 
+        type="submit" 
+        disabled={isSubmitting}
+        className="w-full"
       >
-        Forgot password?
-      </Button>
-      <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
-        Sign In
-      </Button>
-      <div className="relative my-4">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-600"></div>
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-black px-2 text-gray-400">Or continue with</span>
-        </div>
-      </div>
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handleFacebookLogin}
-        className="w-full border-blue-600 text-blue-600 hover:bg-blue-600/10"
-      >
-        <Facebook className="mr-2 h-4 w-4" />
-        Facebook
+        {isSubmitting ? (
+          <>
+            <LoadingSpinner size="sm" className="mr-2" />
+            Signing In...
+          </>
+        ) : (
+          "Sign In"
+        )}
       </Button>
     </form>
   )

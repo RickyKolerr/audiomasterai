@@ -1,43 +1,55 @@
 import { useState } from "react"
-import { Star, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { feedbackSchema } from "@/lib/validations/form-schemas"
 import { useFormValidation } from "@/hooks/use-form-validation"
 import { cn } from "@/lib/utils"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { supabase } from "@/integrations/supabase/client"
 
 interface FeedbackFormData {
   rating: number
   message: string
 }
 
-const FeedbackForm = () => {
-  const [rating, setRating] = useState<number>(0)
-  const [message, setMessage] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export const FeedbackForm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast()
-  const { errors, validate } = useFormValidation<FeedbackFormData>(feedbackSchema)
+  const {
+    formData,
+    errors,
+    handleChange,
+    validateForm,
+    resetForm
+  } = useFormValidation<FeedbackFormData>(
+    { rating: 0, message: "" },
+    feedbackSchema
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const formData = { rating, message }
-    if (!validate(formData)) return
+    if (!validateForm()) return
 
     setIsSubmitting(true)
-    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+      const { error } = await supabase
+        .from('feedback')
+        .insert([
+          { 
+            message: formData.message,
+            rating: formData.rating 
+          }
+        ])
+
+      if (error) throw error
+
       toast({
         title: "Feedback Submitted",
         description: "Thank you for your feedback!",
       })
-      
-      setRating(0)
-      setMessage("")
+      resetForm()
     } catch (error) {
       toast({
         title: "Error",
@@ -50,24 +62,30 @@ const FeedbackForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-200">Rating</label>
-        <div className="flex gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
+        <label 
+          htmlFor="rating" 
+          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+          Rating
+        </label>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5].map((value) => (
             <button
-              key={star}
+              key={value}
               type="button"
-              onClick={() => setRating(star)}
-              className="focus:outline-none"
+              disabled={isSubmitting}
+              onClick={() => handleChange("rating", value)}
+              className={cn(
+                "p-2 rounded-full transition-colors",
+                formData.rating === value
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700",
+                isSubmitting && "opacity-50 cursor-not-allowed"
+              )}
             >
-              <Star
-                className={`w-8 h-8 ${
-                  star <= rating
-                    ? "text-yellow-500 fill-yellow-500"
-                    : "text-gray-400"
-                } hover:text-yellow-500 transition-colors`}
-              />
+              {value}
             </button>
           ))}
         </div>
@@ -77,16 +95,21 @@ const FeedbackForm = () => {
       </div>
 
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-200">
-          Your Feedback
+        <label 
+          htmlFor="message" 
+          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
+          Message
         </label>
         <Textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Tell us about your experience..."
+          id="message"
+          name="message"
+          value={formData.message}
+          onChange={(e) => handleChange("message", e.target.value)}
+          disabled={isSubmitting}
           className={cn(
-            "min-h-[100px] bg-black/50 border-gray-700",
-            errors.message && "border-red-500 focus-visible:ring-red-500"
+            errors.message && "border-red-500",
+            isSubmitting && "opacity-50 cursor-not-allowed"
           )}
         />
         {errors.message && (
@@ -94,18 +117,18 @@ const FeedbackForm = () => {
         )}
       </div>
 
-      <Button
-        type="submit"
-        disabled={isSubmitting || rating === 0}
-        className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
+      <Button 
+        type="submit" 
+        disabled={isSubmitting}
+        className="w-full"
       >
         {isSubmitting ? (
-          "Submitting..."
-        ) : (
           <>
-            Submit Feedback
-            <Send className="ml-2 h-4 w-4" />
+            <LoadingSpinner size="sm" className="mr-2" />
+            Submitting...
           </>
+        ) : (
+          "Submit Feedback"
         )}
       </Button>
     </form>

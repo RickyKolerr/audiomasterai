@@ -1,86 +1,117 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Facebook } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
+import { signUpSchema } from "@/lib/validations/form-schemas"
+import { useFormValidation } from "@/hooks/use-form-validation"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { supabase } from "@/integrations/supabase/client"
 
-const SignUpForm = () => {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+interface SignUpFormData {
+  email: string
+  password: string
+  confirmPassword: string
+}
+
+export const SignUpForm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
+  const {
+    formData,
+    errors,
+    handleChange,
+    validateForm,
+  } = useFormValidation<SignUpFormData>(
+    { email: "", password: "", confirmPassword: "" },
+    signUpSchema
+  )
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Mock sign up
-    toast({
-      title: "Account created!",
-      description: "Welcome to AudioMaster AI",
-    })
-  }
+    
+    if (!validateForm()) return
 
-  const handleFacebookSignUp = () => {
-    // Mock Facebook sign up
-    toast({
-      title: "Facebook sign up",
-      description: "Facebook authentication will be implemented later",
-    })
+    setIsSubmitting(true)
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      })
+
+      if (error) throw error
+
+      toast({
+        title: "Success",
+        description: "Please check your email to verify your account.",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create account. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 py-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Full Name</Label>
         <Input
-          id="name"
-          placeholder="Enter your full name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
           type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+          placeholder="Email"
+          value={formData.email}
+          onChange={(e) => handleChange("email", e.target.value)}
+          disabled={isSubmitting}
+          className={errors.email ? "border-red-500" : ""}
         />
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email}</p>
+        )}
       </div>
+
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
         <Input
-          id="password"
           type="password"
-          placeholder="Create a password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          placeholder="Password"
+          value={formData.password}
+          onChange={(e) => handleChange("password", e.target.value)}
+          disabled={isSubmitting}
+          className={errors.password ? "border-red-500" : ""}
         />
+        {errors.password && (
+          <p className="text-sm text-red-500">{errors.password}</p>
+        )}
       </div>
-      <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
-        Create Account
-      </Button>
-      <div className="relative my-4">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-600"></div>
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-black px-2 text-gray-400">Or continue with</span>
-        </div>
+
+      <div className="space-y-2">
+        <Input
+          type="password"
+          placeholder="Confirm Password"
+          value={formData.confirmPassword}
+          onChange={(e) => handleChange("confirmPassword", e.target.value)}
+          disabled={isSubmitting}
+          className={errors.confirmPassword ? "border-red-500" : ""}
+        />
+        {errors.confirmPassword && (
+          <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+        )}
       </div>
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handleFacebookSignUp}
-        className="w-full border-blue-600 text-blue-600 hover:bg-blue-600/10"
+
+      <Button 
+        type="submit" 
+        disabled={isSubmitting}
+        className="w-full"
       >
-        <Facebook className="mr-2 h-4 w-4" />
-        Facebook
+        {isSubmitting ? (
+          <>
+            <LoadingSpinner size="sm" className="mr-2" />
+            Creating Account...
+          </>
+        ) : (
+          "Sign Up"
+        )}
       </Button>
     </form>
   )
