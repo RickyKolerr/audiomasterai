@@ -1,9 +1,11 @@
 import { Book, Headphones, Upload, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const scrollToConversion = () => {
     const conversionSection = document.getElementById('conversion-section');
@@ -35,33 +37,34 @@ const Hero = () => {
               onClick={scrollToConversion}
             >
               <Upload className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              {t('hero', 'convertButton')}
+              Convert Book Now
             </Button>
             <Button 
               size="lg" 
               variant="outline" 
               className="border-pink-500 text-pink-500 hover:bg-pink-500/10 hover:text-pink-400"
+              onClick={() => navigate("/marketplace")}
             >
               <Headphones className="mr-2 h-5 w-5" />
-              {t('hero', 'browseButton')}
+              Browse Library
             </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
             <div className="p-6 rounded-xl bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 hover:border-green-500/40 transition-all duration-300">
               <Book className="w-12 h-12 text-green-500 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'smartConversion')}</h3>
-              <p className="text-gray-400">{t('features', 'smartConversion')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Smart Conversion</h3>
+              <p className="text-gray-400">Convert your books into high-quality audiobooks using advanced AI technology</p>
             </div>
             <div className="p-6 rounded-xl bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300">
               <Settings className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'voiceCustomization')}</h3>
-              <p className="text-gray-400">{t('features', 'voiceCustomization')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Voice Customization</h3>
+              <p className="text-gray-400">Customize voice, speed, and tone to create the perfect listening experience</p>
             </div>
             <div className="p-6 rounded-xl bg-gradient-to-br from-pink-500/10 to-transparent border border-pink-500/20 hover:border-pink-500/40 transition-all duration-300">
               <Headphones className="w-12 h-12 text-pink-500 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">{t('features', 'shareDownload')}</h3>
-              <p className="text-gray-400">{t('features', 'shareDownload')}</p>
+              <h3 className="text-xl font-semibold text-white mb-2">Share & Download</h3>
+              <p className="text-gray-400">Easily share and download your audiobooks for offline listening</p>
             </div>
           </div>
         </div>

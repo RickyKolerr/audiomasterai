@@ -42,38 +42,32 @@ const Navbar = () => {
     { path: "/contact", icon: Mail, label: "Contact" },
   ];
 
-  const NavContent = () => (
-    <>
-      {navItems.map((item) => (
-        <NavigationMenuItem key={item.path}>
-          <Link 
-            to={item.path}
-            className={`text-foreground hover:text-green-500 transition-colors flex items-center gap-2 group ${
-              isActive(item.path) ? 'text-green-500' : ''
-            }`}
-          >
-            <item.icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            {item.label}
-          </Link>
-        </NavigationMenuItem>
-      ))}
-    </>
-  );
-
   return (
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 py-4 border-b border-green-500/20">
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link to="/" className="flex items-center space-x-2 group">
           <Headphones className="w-8 h-8 text-green-500 group-hover:scale-110 transition-transform" />
           <span className="text-2xl font-bold bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text">
-            AudioMaster AI
+            Kolerr Technologies Inc
           </span>
         </Link>
         
         <div className="hidden md:flex items-center space-x-8">
           <NavigationMenu>
             <NavigationMenuList className="space-x-6">
-              <NavContent />
+              {navItems.map((item) => (
+                <NavigationMenuItem key={item.path}>
+                  <Link 
+                    to={item.path}
+                    className={`text-foreground hover:text-green-500 transition-colors flex items-center gap-2 group ${
+                      isActive(item.path) ? 'text-green-500' : ''
+                    }`}
+                  >
+                    <item.icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    {item.label}
+                  </Link>
+                </NavigationMenuItem>
+              ))}
             </NavigationMenuList>
           </NavigationMenu>
           <ThemeToggle />
