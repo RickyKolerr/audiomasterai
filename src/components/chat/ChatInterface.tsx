@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Message {
   id: string;
@@ -86,77 +87,148 @@ export const ChatInterface = () => {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      {!isOpen ? (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="rounded-full w-14 h-14 bg-green-500 hover:bg-green-600 shadow-lg group"
-        >
-          <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform" />
-        </Button>
-      ) : (
-        <div className="bg-background rounded-lg shadow-xl w-[380px] h-[600px] flex flex-col animate-fade-in">
-          <div className="p-4 border-b flex items-center justify-between bg-green-500 text-white rounded-t-lg">
-            <div className="flex items-center gap-2">
-              <Bot className="w-6 h-6" />
-              <h3 className="font-semibold">AudioMaster Assistant</h3>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:bg-green-600 text-white"
-                onClick={() => setIsOpen(false)}
-              >
-                <Minimize2 className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:bg-green-600 text-white"
-                onClick={() => {
-                  setIsOpen(false);
-                  setMessages([]);
-                }}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
+      <AnimatePresence>
+        {!isOpen ? (
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <Button
+              onClick={() => setIsOpen(true)}
+              className="rounded-full w-14 h-14 bg-green-500 hover:bg-green-600 shadow-lg group"
+            >
+              <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            </Button>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 20 }}
+            className="bg-background rounded-lg shadow-xl w-[380px] h-[600px] flex flex-col"
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="p-4 border-b flex items-center justify-between bg-green-500 text-white rounded-t-lg"
+            >
+              <div className="flex items-center gap-2">
+                <Bot className="w-6 h-6" />
+                <h3 className="font-semibold">AudioMaster Assistant</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-green-600 text-white"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Minimize2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-green-600 text-white"
+                  onClick={() => {
+                    setIsOpen(false);
+                    setMessages([]);
+                  }}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </motion.div>
 
-          <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-            <div className="space-y-4">
-              {messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  content={message.content}
-                  role={message.role}
-                />
-              ))}
-              {isTyping && (
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <Bot className="w-4 h-4 text-green-500" />
-                  </div>
-                  <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
-                    <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+            <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-4"
+              >
+                {messages.map((message, index) => (
+                  <motion.div
+                    key={message.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <ChatMessage
+                      content={message.content}
+                      role={message.role}
+                    />
+                  </motion.div>
+                ))}
+                {isTyping && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                      <Bot className="w-4 h-4 text-green-500" />
                     </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </ScrollArea>
+                    <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
+                      <div className="flex gap-1">
+                        <motion.span
+                          animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.4, 1, 0.4]
+                          }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            repeatType: "loop",
+                            times: [0, 0.5, 1]
+                          }}
+                          className="w-2 h-2 bg-gray-400 rounded-full"
+                        />
+                        <motion.span
+                          animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.4, 1, 0.4]
+                          }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            repeatType: "loop",
+                            times: [0, 0.5, 1],
+                            delay: 0.2
+                          }}
+                          className="w-2 h-2 bg-gray-400 rounded-full"
+                        />
+                        <motion.span
+                          animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.4, 1, 0.4]
+                          }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            repeatType: "loop",
+                            times: [0, 0.5, 1],
+                            delay: 0.4
+                          }}
+                          className="w-2 h-2 bg-gray-400 rounded-full"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            </ScrollArea>
 
-          <ChatInput
-            value={input}
-            onChange={setInput}
-            onSend={handleSendMessage}
-            onKeyPress={handleKeyPress}
-          />
-        </div>
-      )}
+            <ChatInput
+              value={input}
+              onChange={setInput}
+              onSend={handleSendMessage}
+              onKeyPress={handleKeyPress}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { LanguageProvider } from "./lib/i18n/LanguageContext"
 import { ThemeProvider } from "./components/theme/ThemeProvider"
 import { supabase } from "./integrations/supabase/client"
+import { ChatInterface } from "./components/chat/ChatInterface"
 import Index from "./pages/Index"
 import Auth from "./pages/Auth"
 import Features from "./pages/Features"
@@ -88,6 +89,7 @@ const App = () => {
                 <Route path="/marketplace" element={<Marketplace />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <ChatInterface />
               <LanguageSwitcher />
               <Toaster />
               <Sonner />
