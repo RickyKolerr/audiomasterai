@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { Book, Play, Search, Volume2 } from "lucide-react";
+import { Book, Play, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-import { APIStatusBadge } from "@/components/APIStatusBadge";
 import {
   Select,
   SelectContent,
@@ -21,46 +20,62 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import FileUploadZone from "@/components/upload/FileUploadZone";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
-import { synthesizeSpeech, getVoices, checkElevenLabsStatus, Voice } from "@/services/elevenlabs";
 
 const BookConversion = () => {
   const [selectedBook, setSelectedBook] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [selectedVoice, setSelectedVoice] = useState<string>("");
-  const [previewAudio, setPreviewAudio] = useState<HTMLAudioElement | null>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const { toast } = useToast();
 
-  const { data: voices = [], isLoading: loadingVoices } = useQuery({
-    queryKey: ['voices'],
-    queryFn: getVoices,
-  });
+  // Mock data - replace with real API data later
+  const availableBooks = [
+    { id: "1", title: "The Great Gatsby" },
+    { id: "2", title: "1984" },
+    { id: "3", title: "Pride and Prejudice" },
+  ];
 
-  const { data: apiStatus, isLoading: checkingStatus } = useQuery({
-    queryKey: ['elevenlabs-status'],
-    queryFn: checkElevenLabsStatus,
-  });
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
-  const { data: books = [], isLoading: loadingBooks } = useQuery({
-    queryKey: ['books'],
-    queryFn: async () => {
-      const { data: session } = await supabase.auth.getSession();
-      if (!session.session) throw new Error('No session');
+  const fetchUserProfile = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        setUserProfile(profile);
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
 
-      const { data, error } = await supabase
-        .from('books')
-        .select('*')
-        .eq('user_id', session.session.user.id)
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data;
-    },
-  });
+  const checkConversionLimit = () => {
+    if (!userProfile) return false;
 
-  const handleFileSelect = async (file: File) => {
+    const isFreePlan = !userProfile.subscription_plan || userProfile.subscription_plan === 'free';
+    if (!isFreePlan) return true;
+
+    const monthlyLimit = 3; // Free plan limit
+    const lastReset = new Date(userProfile.last_conversion_reset);
+    const now = new Date();
+    
+    // Reset counter if it's been a month
+    if (lastReset.getMonth() !== now.getMonth() || lastReset.getFullYear() !== now.getFullYear()) {
+      return true;
+    }
+
+    return userProfile.monthly_conversions_used < monthlyLimit;
+  };
+
+  const handleFileSelect = (file: File) => {
+    // Validate file type
     const validTypes = ['application/pdf', 'text/plain'];
     if (!validTypes.includes(file.type)) {
       toast({
@@ -71,100 +86,27 @@ const BookConversion = () => {
       return;
     }
 
-    try {
-      const { data: session } = await supabase.auth.getSession();
-      if (!session.session) {
-        toast({
-          title: "Authentication Error",
-          description: "Please sign in to upload books",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const fileName = `${Date.now()}-${file.name}`;
-      const { data, error } = await supabase.storage
-        .from('books')
-        .upload(fileName, file);
-
-      if (error) throw error;
-
-      const { error: dbError } = await supabase
-        .from('books')
-        .insert({
-          title: file.name,
-          original_filename: file.name,
-          file_path: data.path,
-          content_type: file.type,
-          file_size: file.size,
-          user_id: session.session.user.id,
-          voice_settings: {
-            voice_id: selectedVoice,
-            pitch: 1,
-            speed: 1
-          }
-        });
-
-      if (dbError) throw dbError;
-
-      toast({
-        title: "File Uploaded",
-        description: "Your book has been uploaded successfully",
-      });
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      toast({
-        title: "Upload Failed",
-        description: "Failed to upload the file. Please try again.",
-        variant: "destructive",
-      });
-    }
+    // Mock upload success - replace with real upload logic later
+    toast({
+      title: "File Uploaded",
+      description: `Successfully uploaded ${file.name}`,
+    });
   };
 
-  const handlePreviewVoice = async () => {
-    if (!selectedVoice) {
+  const startConversion = async () => {
+    if (!selectedBook) {
       toast({
-        title: "Select a Voice",
-        description: "Please select a voice before previewing",
+        title: "No Book Selected",
+        description: "Please select a book or upload a file first",
         variant: "destructive",
       });
       return;
     }
 
-    try {
-      const audioUrl = await synthesizeSpeech(
-        "Hello! This is a preview of how your audiobook will sound.",
-        selectedVoice
-      );
-
-      if (previewAudio) {
-        previewAudio.pause();
-        previewAudio.src = "";
-      }
-
-      const audio = new Audio(audioUrl);
-      setPreviewAudio(audio);
-      await audio.play();
-
+    if (!checkConversionLimit()) {
       toast({
-        title: "Playing Preview",
-        description: "Now playing voice preview",
-      });
-    } catch (error) {
-      console.error('Error playing preview:', error);
-      toast({
-        title: "Preview Failed",
-        description: "Failed to play voice preview. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const startConversion = async () => {
-    if (!selectedBook || !selectedVoice) {
-      toast({
-        title: "Missing Information",
-        description: "Please select both a book and a voice",
+        title: "Conversion Limit Reached",
+        description: "You've reached your monthly conversion limit. Please upgrade to continue converting books.",
         variant: "destructive",
       });
       return;
@@ -174,7 +116,19 @@ const BookConversion = () => {
     setProgress(0);
 
     try {
-      // Mock conversion progress - replace with real conversion logic
+      // Update conversion count if user is on free plan
+      if (userProfile && (!userProfile.subscription_plan || userProfile.subscription_plan === 'free')) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            monthly_conversions_used: (userProfile.monthly_conversions_used || 0) + 1
+          })
+          .eq('id', userProfile.id);
+
+        if (error) throw error;
+      }
+
+      // Mock conversion progress - replace with real conversion logic later
       const interval = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 100) {
@@ -190,19 +144,28 @@ const BookConversion = () => {
         });
       }, 1000);
     } catch (error) {
-      console.error('Error during conversion:', error);
+      console.error('Error updating conversion count:', error);
       toast({
-        title: "Conversion Failed",
-        description: "Failed to convert the book. Please try again.",
+        title: "Error",
+        description: "Failed to update conversion count",
         variant: "destructive",
       });
       setIsConverting(false);
     }
   };
 
-  const filteredBooks = books.filter((book) =>
+  const filteredBooks = availableBooks.filter((book) =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const getConversionsRemaining = () => {
+    if (!userProfile) return null;
+    if (userProfile.subscription_plan && userProfile.subscription_plan !== 'free') return 'Unlimited';
+    
+    const monthlyLimit = 3;
+    const used = userProfile.monthly_conversions_used || 0;
+    return `${monthlyLimit - used} / ${monthlyLimit}`;
+  };
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -210,17 +173,18 @@ const BookConversion = () => {
         <CardTitle className="flex items-center gap-2">
           <Book className="h-6 w-6" />
           Book to Audio Conversion
-          <APIStatusBadge
-            name="ElevenLabs"
-            isLoading={checkingStatus}
-            isError={!apiStatus}
-          />
         </CardTitle>
         <CardDescription>
           Convert your books into high-quality audiobooks using AI
+          {getConversionsRemaining() && (
+            <div className="mt-2 text-sm">
+              Conversions remaining this month: {getConversionsRemaining()}
+            </div>
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Search and Book Selection */}
         <div className="space-y-4">
           <div className="flex gap-4">
             <div className="relative flex-1">
@@ -247,30 +211,6 @@ const BookConversion = () => {
             </SelectContent>
           </Select>
 
-          <Select value={selectedVoice} onValueChange={setSelectedVoice}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a voice" />
-            </SelectTrigger>
-            <SelectContent>
-              {voices.map((voice: Voice) => (
-                <SelectItem key={voice.voice_id} value={voice.voice_id}>
-                  {voice.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {selectedVoice && (
-            <Button
-              onClick={handlePreviewVoice}
-              variant="outline"
-              className="w-full"
-            >
-              <Volume2 className="mr-2 h-4 w-4" />
-              Preview Voice
-            </Button>
-          )}
-
           <FileUploadZone
             onFileSelect={handleFileSelect}
             acceptedFileTypes={[".pdf", ".txt"]}
@@ -278,10 +218,11 @@ const BookConversion = () => {
           />
         </div>
 
+        {/* Conversion Progress */}
         <div className="space-y-4">
           <Button
             onClick={startConversion}
-            disabled={isConverting || !selectedBook || !selectedVoice}
+            disabled={isConverting || !selectedBook}
             className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
           >
             <Play className="mr-2 h-4 w-4" />
