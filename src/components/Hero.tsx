@@ -33,12 +33,24 @@ const Hero = () => {
     }
   };
 
+  const trustedCompanies = [
+    { name: 'TechCrunch', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' },
+    { name: 'Forbes', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' },
+    { name: 'Wired', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' },
+    { name: 'Bloomberg', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' },
+    { name: 'The Verge', logo: 'https://images.unsplash.com/photo-1621768216002-5ac171876625?w=200&h=100&fit=crop' }
+  ];
+
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-start bg-gradient-to-b from-black via-black to-accent/5">
-      {/* Decorative background elements */}
+      {/* Hero Background Image */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl opacity-20" />
-        <div className="absolute top-20 -left-40 w-80 h-80 bg-accent/20 rounded-full blur-3xl opacity-20" />
+        <img
+          src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=2000&q=80"
+          alt="Hero background"
+          className="w-full h-full object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/90" />
       </div>
 
       <div className="container mx-auto px-4 pt-32 md:pt-40 relative z-10">
@@ -76,6 +88,26 @@ const Hero = () => {
               <Headphones className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
               Browse Library
             </Button>
+          </div>
+
+          {/* Trusted By Section */}
+          <div className="mt-16 pt-8 border-t border-gray-800">
+            <p className="text-sm text-gray-400 mb-6">TRUSTED BY LEADING COMPANIES</p>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-center">
+              {trustedCompanies.map((company, index) => (
+                <div 
+                  key={company.name}
+                  className="flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <img
+                    src={company.logo}
+                    alt={`${company.name} logo`}
+                    className="h-8 object-contain opacity-50 hover:opacity-100 transition-opacity"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 animate-fade-in">
