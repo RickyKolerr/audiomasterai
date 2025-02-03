@@ -1,4 +1,5 @@
 import { Book, Settings, Upload, Share2, Crown, BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const features = [
   {
@@ -6,21 +7,18 @@ const features = [
     description: "Convert any book into high-quality audiobooks using advanced AI",
     icon: Book,
     color: "green",
-    action: "conversion-section"
   },
   {
     title: "Voice Customization",
     description: "Choose from multiple voices and customize to your preference",
     icon: Settings,
     color: "blue",
-    action: "voice-section"
   },
   {
     title: "Share & Download",
     description: "Share your audiobooks or download for offline listening",
     icon: Share2,
     color: "pink",
-    action: "share-section"
   },
   {
     title: "Premium Voices",
@@ -67,14 +65,7 @@ const getIconColor = (color: string) => {
 };
 
 const Features = () => {
-  const handleFeatureClick = (sectionId?: string) => {
-    if (sectionId) {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
+  const navigate = useNavigate();
 
   return (
     <section id="features" className="py-20 bg-black">
@@ -89,7 +80,7 @@ const Features = () => {
             <div
               key={index}
               className={`p-6 rounded-xl bg-gradient-to-br ${getGradient(feature.color)} border transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-${feature.color}-500/10 group cursor-pointer`}
-              onClick={() => handleFeatureClick(feature.action)}
+              onClick={() => navigate('/features')}
             >
               <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${getIconColor(feature.color)} group-hover:scale-110 transition-transform`}>
                 <feature.icon className="w-6 h-6" />
