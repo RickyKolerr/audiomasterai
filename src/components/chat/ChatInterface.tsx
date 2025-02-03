@@ -44,6 +44,17 @@ export const ChatInterface = () => {
     setIsTyping(true);
 
     try {
+      // Store the user message in Supabase
+      const { error: insertError } = await supabase
+        .from('chatbot_conversations')
+        .insert({
+          message: input,
+          response: '', // Will be updated after AI responds
+          user_id: (await supabase.auth.getUser()).data.user?.id,
+        });
+
+      if (insertError) throw insertError;
+
       const { data, error } = await supabase.functions.invoke('chat-with-gpt', {
         body: {
           messages: [
@@ -65,9 +76,21 @@ export const ChatInterface = () => {
         timestamp: new Date(),
       };
 
+      // Update the conversation with AI response
+      const { error: updateError } = await supabase
+        .from('chatbot_conversations')
+        .update({ 
+          response: data.message,
+          resolved: true 
+        })
+        .eq('message', input)
+        .eq('user_id', (await supabase.auth.getUser()).data.user?.id);
+
+      if (updateError) throw updateError;
+
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error('Error calling GPT function:', error);
+      console.error('Error in chat:', error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -117,7 +140,7 @@ export const ChatInterface = () => {
             >
               <div className="flex items-center gap-2">
                 <Bot className="w-6 h-6" />
-                <h3 className="font-semibold">Audiovable Assistant</h3>
+                <h3 className="font-semibold">AudioMaster Assistant</h3>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -148,6 +171,12 @@ export const ChatInterface = () => {
                 animate={{ opacity: 1 }}
                 className="space-y-4"
               >
+                {messages.length === 0 && (
+                  <div className="text-center text-gray-500 mt-4">
+                    <p>👋 Hi! I'm your AudioMaster Assistant.</p>
+                    <p className="mt-2">How can I help you today?</p>
+                  </div>
+                )}
                 {messages.map((message, index) => (
                   <motion.div
                     key={message.id}

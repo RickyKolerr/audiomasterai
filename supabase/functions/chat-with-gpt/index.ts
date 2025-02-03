@@ -19,6 +19,26 @@ serve(async (req) => {
 
     const { messages } = await req.json();
 
+    const systemMessage = {
+      role: 'system',
+      content: `You are AudioMaster, an AI customer service assistant for an audiobook creation platform. Your role is to:
+      1. Help users with audiobook conversion and voice customization
+      2. Assist with technical issues and platform navigation
+      3. Explain pricing plans and features
+      4. Provide best practices for audio quality
+      5. Handle account-related queries
+      
+      Keep responses concise, professional, and focused on audiobook-related topics. If unsure, ask for clarification.
+      Common topics include:
+      - File formats: MP3, WAV, PDF, EPUB, etc.
+      - Voice customization options
+      - Pricing plans and features
+      - Technical requirements
+      - Account management
+      - Conversion process
+      - Audio quality tips`
+    };
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -28,11 +48,11 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          {
-            role: 'system',
-            content: 'You are AudioMaster, an AI assistant specialized in helping users with audiobook creation and voice customization. You provide concise, helpful responses focused on audio-related topics.'
-          },
-          ...messages
+          systemMessage,
+          ...messages.map(msg => ({
+            role: msg.role,
+            content: msg.content
+          }))
         ],
         temperature: 0.7,
       }),

@@ -161,6 +161,45 @@ export type Database = {
         }
         Relationships: []
       }
+      chatbot_conversations: {
+        Row: {
+          category: string | null
+          context: Json | null
+          created_at: string
+          feedback_rating: number | null
+          id: string
+          message: string
+          resolved: boolean | null
+          response: string
+          sentiment: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          context?: Json | null
+          created_at?: string
+          feedback_rating?: number | null
+          id?: string
+          message: string
+          resolved?: boolean | null
+          response: string
+          sentiment?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          context?: Json | null
+          created_at?: string
+          feedback_rating?: number | null
+          id?: string
+          message?: string
+          resolved?: boolean | null
+          response?: string
+          sentiment?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       downloads: {
         Row: {
           audiobook_id: string
