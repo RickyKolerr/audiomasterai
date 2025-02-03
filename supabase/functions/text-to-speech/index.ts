@@ -17,13 +17,20 @@ serve(async (req) => {
       throw new Error('No text provided')
     }
 
+    const elevenlabsApiKey = Deno.env.get('ELEVENLABS_API_KEY');
+    if (!elevenlabsApiKey) {
+      throw new Error('ElevenLabs API key not configured');
+    }
+
+    console.log('Processing text-to-speech request:', { text, voiceId });
+
     const response = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voiceId || "EXAVITQu4vr4xnSDxMaL"}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'xi-api-key': Deno.env.get('ELEVENLABS_API_KEY') || '',
+          'xi-api-key': elevenlabsApiKey,
         },
         body: JSON.stringify({
           text,
@@ -37,8 +44,12 @@ serve(async (req) => {
     )
 
     if (!response.ok) {
-      throw new Error(`ElevenLabs API error: ${await response.text()}`)
+      const errorText = await response.text();
+      console.error('ElevenLabs API error:', errorText);
+      throw new Error(`ElevenLabs API error: ${errorText}`);
     }
+
+    console.log('Successfully generated audio');
 
     const audioBuffer = await response.arrayBuffer()
 
@@ -54,6 +65,7 @@ serve(async (req) => {
     )
 
   } catch (error) {
+    console.error('Error in text-to-speech function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {
