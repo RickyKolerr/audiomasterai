@@ -38,6 +38,9 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          voice_conversion_error: string | null
+          voice_conversion_status: string | null
+          voice_settings: Json | null
         }
         Insert: {
           content_type: string
@@ -52,6 +55,9 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          voice_conversion_error?: string | null
+          voice_conversion_status?: string | null
+          voice_settings?: Json | null
         }
         Update: {
           content_type?: string
@@ -66,6 +72,9 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          voice_conversion_error?: string | null
+          voice_conversion_status?: string | null
+          voice_settings?: Json | null
         }
         Relationships: []
       }
