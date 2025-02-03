@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Book, Play, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -19,13 +18,16 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import FileUploadZone from "@/components/upload/FileUploadZone";
+import AudioPlayer from "@/components/audio/AudioPlayer";
+import { useConversionProgress } from "@/hooks/useConversionProgress";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const BookConversion = () => {
   const [selectedBook, setSelectedBook] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isConverting, setIsConverting] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const isOnline = useOnlineStatus();
   const { toast } = useToast();
+  const progress = useConversionProgress(selectedBook);
 
   // Mock data - replace with real API data later
   const availableBooks = [
@@ -35,7 +37,15 @@ const BookConversion = () => {
   ];
 
   const handleFileSelect = (file: File) => {
-    // Validate file type
+    if (!isOnline) {
+      toast({
+        title: "Offline Mode",
+        description: "File upload will be queued until you're back online",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const validTypes = ['application/pdf', 'text/plain'];
     if (!validTypes.includes(file.type)) {
       toast({
@@ -46,7 +56,6 @@ const BookConversion = () => {
       return;
     }
 
-    // Mock upload success - replace with real upload logic later
     toast({
       title: "File Uploaded",
       description: `Successfully uploaded ${file.name}`,
@@ -54,6 +63,15 @@ const BookConversion = () => {
   };
 
   const startConversion = () => {
+    if (!isOnline) {
+      toast({
+        title: "Offline Mode",
+        description: "Conversion will start when you're back online",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!selectedBook) {
       toast({
         title: "No Book Selected",
@@ -62,25 +80,6 @@ const BookConversion = () => {
       });
       return;
     }
-
-    setIsConverting(true);
-    setProgress(0);
-
-    // Mock conversion progress - replace with real conversion logic later
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsConverting(false);
-          toast({
-            title: "Conversion Complete",
-            description: "Your audiobook is ready!",
-          });
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 1000);
   };
 
   const filteredBooks = availableBooks.filter((book) =>
@@ -99,7 +98,6 @@ const BookConversion = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Search and Book Selection */}
         <div className="space-y-4">
           <div className="flex gap-4">
             <div className="relative flex-1">
@@ -133,24 +131,42 @@ const BookConversion = () => {
           />
         </div>
 
-        {/* Conversion Progress */}
         <div className="space-y-4">
           <Button
             onClick={startConversion}
-            disabled={isConverting || !selectedBook}
+            disabled={!isOnline || progress.status === "processing" || !selectedBook}
             className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
           >
             <Play className="mr-2 h-4 w-4" />
-            {isConverting ? "Converting..." : "Start Conversion"}
+            {progress.status === "processing" ? "Converting..." : "Start Conversion"}
           </Button>
 
-          {(isConverting || progress > 0) && (
+          {progress.status === "completed" && (
+            <AudioPlayer
+              src="/path/to/converted/audio.mp3"
+              onError={(error) => {
+                toast({
+                  title: "Playback Error",
+                  description: error.message,
+                  variant: "destructive",
+                });
+              }}
+            />
+          )}
+
+          {progress.status === "processing" && (
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Converting book to audio...</span>
-                <span>{progress}%</span>
+                <span>{progress.progress}%</span>
               </div>
-              <Progress value={progress} className="h-2" />
+              <Progress value={progress.progress} className="h-2" />
+            </div>
+          )}
+
+          {progress.status === "error" && (
+            <div className="text-red-500 text-sm">
+              {progress.error}
             </div>
           )}
         </div>
