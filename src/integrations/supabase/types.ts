@@ -114,6 +114,36 @@ export type Database = {
         }
         Relationships: []
       }
+      premium_voices: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_premium: boolean | null
+          name: string
+          preview_url: string | null
+          voice_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          is_premium?: boolean | null
+          name: string
+          preview_url?: string | null
+          voice_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_premium?: boolean | null
+          name?: string
+          preview_url?: string | null
+          voice_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
