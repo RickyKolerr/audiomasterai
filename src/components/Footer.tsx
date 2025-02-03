@@ -76,7 +76,7 @@ const Footer = () => {
             <div className="flex items-center space-x-2">
               <Shield className="w-5 h-5 text-green-500" />
               <p className="text-gray-400 text-sm">
-                &copy; {new Date().getFullYear()} Kolerr Technologies Inc. All rights reserved.
+                &copy; {new Date().getFullYear()} Audiovable by Kolerr Technologies. All rights reserved.
               </p>
             </div>
             <div className="flex items-center gap-6">

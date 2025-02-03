@@ -123,9 +123,10 @@ const Documentation = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Welcome to{" "}
             <span className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text">
-              Kolerr Technologies Inc
+              Audiovable
             </span>{" "}
             Documentation
+            <span className="block text-lg text-gray-400 mt-2">by Kolerr Technologies</span>
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             This page is designed to help you understand how to use the features and functionality of our platform in a simple and clear manner.

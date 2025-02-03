@@ -49,8 +49,9 @@ const Navbar = () => {
         <Link to="/" className="flex items-center space-x-2 group">
           <Headphones className="w-8 h-8 text-green-500 group-hover:scale-110 transition-transform" />
           <span className="text-2xl font-bold bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text">
-            Kolerr Technologies Inc
+            Audiovable
           </span>
+          <span className="text-sm text-gray-400 ml-2">by Kolerr Technologies</span>
         </Link>
         
         <div className="hidden md:flex items-center space-x-8">

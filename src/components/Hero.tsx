@@ -22,8 +22,9 @@ const Hero = () => {
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Transform Your Books Into{' '}
               <span className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text">
-                Professional Audiobooks
+                Audiovable
               </span>
+              <span className="block text-2xl mt-2 text-gray-400">Professional Audiobook Creation Platform</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 mb-8 animate-fade-in [--delay-1]">
               Using advanced AI technology to convert your books into high-quality audiobooks with natural-sounding voices
