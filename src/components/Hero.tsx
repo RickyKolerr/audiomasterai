@@ -1,4 +1,4 @@
-import { Headphones } from "lucide-react";
+import { Headphones, Book, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
