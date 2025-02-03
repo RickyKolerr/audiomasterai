@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Voice {
@@ -11,6 +12,13 @@ export const defaultVoices: Voice[] = [
   { voice_id: "TX3LPaxmHKxFdv7VOQHJ", name: "Liam" },
   { voice_id: "pFZP5JQG7iQjIQuC4Bku", name: "Lily" },
 ];
+
+export const useVoices = () => {
+  return useQuery({
+    queryKey: ['voices'],
+    queryFn: getVoices,
+  });
+};
 
 export const synthesizeSpeech = async (text: string, voiceId: string = defaultVoices[0].voice_id) => {
   try {

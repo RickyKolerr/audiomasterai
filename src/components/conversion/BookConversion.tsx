@@ -46,9 +46,13 @@ const BookConversion = () => {
   const { data: books = [], isLoading: loadingBooks } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) throw new Error('No session');
+
       const { data, error } = await supabase
         .from('books')
         .select('*')
+        .eq('user_id', session.session.user.id)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -68,6 +72,16 @@ const BookConversion = () => {
     }
 
     try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) {
+        toast({
+          title: "Authentication Error",
+          description: "Please sign in to upload books",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const fileName = `${Date.now()}-${file.name}`;
       const { data, error } = await supabase.storage
         .from('books')
@@ -83,6 +97,7 @@ const BookConversion = () => {
           file_path: data.path,
           content_type: file.type,
           file_size: file.size,
+          user_id: session.session.user.id,
           voice_settings: {
             voice_id: selectedVoice,
             pitch: 1,
