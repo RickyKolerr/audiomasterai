@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { feedbackSchema } from "@/lib/validations/form-schemas"
 import { useFormValidation } from "@/hooks/use-form-validation"
+import { cn } from "@/lib/utils"
 
 interface FeedbackFormData {
   rating: number
