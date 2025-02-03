@@ -1,31 +1,52 @@
-import { useState } from "react";
-import { Star, Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from "react"
+import { Star, Send } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/hooks/use-toast"
+import { feedbackSchema } from "@/lib/validations/form-schemas"
+import { useFormValidation } from "@/hooks/use-form-validation"
+
+interface FeedbackFormData {
+  rating: number
+  message: string
+}
 
 const FeedbackForm = () => {
-  const [rating, setRating] = useState<number>(0);
-  const [feedback, setFeedback] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
+  const [rating, setRating] = useState<number>(0)
+  const [message, setMessage] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast()
+  const { errors, validate } = useFormValidation<FeedbackFormData>(feedbackSchema)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+    e.preventDefault()
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const formData = { rating, message }
+    if (!validate(formData)) return
+
+    setIsSubmitting(true)
     
-    toast({
-      title: "Feedback Submitted",
-      description: "Thank you for your feedback!",
-    });
-    
-    setIsSubmitting(false);
-    setRating(0);
-    setFeedback("");
-  };
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      toast({
+        title: "Feedback Submitted",
+        description: "Thank you for your feedback!",
+      })
+      
+      setRating(0)
+      setMessage("")
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit feedback. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -49,6 +70,9 @@ const FeedbackForm = () => {
             </button>
           ))}
         </div>
+        {errors.rating && (
+          <p className="text-sm text-red-500">{errors.rating}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -56,11 +80,17 @@ const FeedbackForm = () => {
           Your Feedback
         </label>
         <Textarea
-          value={feedback}
-          onChange={(e) => setFeedback(e.target.value)}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="Tell us about your experience..."
-          className="min-h-[100px] bg-black/50 border-gray-700"
+          className={cn(
+            "min-h-[100px] bg-black/50 border-gray-700",
+            errors.message && "border-red-500 focus-visible:ring-red-500"
+          )}
         />
+        {errors.message && (
+          <p className="text-sm text-red-500">{errors.message}</p>
+        )}
       </div>
 
       <Button
@@ -78,7 +108,7 @@ const FeedbackForm = () => {
         )}
       </Button>
     </form>
-  );
-};
+  )
+}
 
-export default FeedbackForm;
+export default FeedbackForm
