@@ -9,8 +9,8 @@ export const translations = {
     },
     hero: {
       title: "Transform Your Books into",
-      subtitle: "AI-Powered Audiobooks",
-      description: "Convert any book or study material into high-quality audiobooks with customizable voices. Experience the future of reading with our AI technology.",
+      subtitle: "Professional Audiobooks",
+      description: "Convert any book or study material into high-quality audiobooks with customizable voices. Experience the future of reading with Audiovable.",
       convertButton: "Convert Book Now",
       browseButton: "Browse Library",
     },
