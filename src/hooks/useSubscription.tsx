@@ -29,13 +29,12 @@ export const useSubscription = () => {
           return;
         }
 
-        const { data: profile, error } = await supabase
+        // Using maybeSingle() instead of single() to handle no subscription case
+        const { data: profile } = await supabase
           .from("profiles")
           .select("subscription_status, subscription_plan")
           .eq("id", session.user.id)
-          .single();
-
-        if (error) throw error;
+          .maybeSingle();
 
         setSubscription({
           status: profile?.subscription_status || "inactive",
