@@ -1,18 +1,14 @@
 import { Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom"
 import NotificationCenter from "@/components/notifications/NotificationCenter"
+import { Logo } from "@/components/ui/logo"
 
 const DashboardNav = () => {
   return (
     <nav className="border-b border-green-500/20 bg-black/95 backdrop-blur-sm">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="text-xl font-bold text-white">
-              Audiovable
-            </Link>
-          </div>
+          <Logo size="sm" />
           <div className="flex items-center gap-4">
             <NotificationCenter />
             <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
@@ -25,7 +21,7 @@ const DashboardNav = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default DashboardNav
+export default DashboardNav;

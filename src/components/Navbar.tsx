@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, Star, DollarSign, Mail, Book, Headphones, Crown, ShoppingCart, FileText, LogOut, Users, Briefcase } from "lucide-react";
+import { Menu, Settings, Star, DollarSign, Mail, Book, Crown, ShoppingCart, FileText, LogOut, Users, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ThemeToggle } from "./theme/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import { Logo } from "./ui/logo";
 
 const Navbar = () => {
   const location = useLocation();
@@ -46,13 +47,7 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 py-4 border-b border-green-500/20">
       <div className="container mx-auto flex items-center justify-between px-4">
-        <Link to="/" className="flex items-center space-x-2 group">
-          <Headphones className="w-8 h-8 text-green-500 group-hover:scale-110 transition-transform" />
-          <span className="text-2xl font-bold bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-transparent bg-clip-text">
-            Audiovable
-          </span>
-          <span className="text-sm text-gray-400 ml-2">by Kolerr Technologies</span>
-        </Link>
+        <Logo />
         
         <div className="hidden md:flex items-center space-x-8">
           <NavigationMenu>
@@ -98,6 +93,7 @@ const Navbar = () => {
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px] bg-background border-l border-green-500/20">
             <div className="flex flex-col space-y-6 mt-6">
+              <Logo size="sm" />
               {navItems.map((item) => (
                 <Link
                   key={item.path}
