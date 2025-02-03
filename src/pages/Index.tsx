@@ -1,15 +1,64 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import Pricing from "@/components/pricing/PricingCard";
+import PricingCard from "@/components/pricing/PricingCard";
 import FeedbackPage from "@/components/feedback/FeedbackPage";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  const plans = [
+    {
+      name: "Basic",
+      price: "Free",
+      description: "Perfect for getting started",
+      features: [
+        "Convert up to 3 books per month",
+        "Basic voice options",
+        "Standard quality audio",
+        "Email support"
+      ]
+    },
+    {
+      name: "Pro",
+      price: "$9.99",
+      description: "Most popular choice",
+      features: [
+        "Convert up to 20 books per month",
+        "Premium voice options",
+        "High quality audio",
+        "Priority support",
+        "Offline access"
+      ],
+      popular: true
+    },
+    {
+      name: "Enterprise",
+      price: "$29.99",
+      description: "For power users",
+      features: [
+        "Unlimited conversions",
+        "All premium voices",
+        "Ultra-high quality audio",
+        "24/7 priority support",
+        "API access",
+        "Custom voice training"
+      ]
+    }
+  ];
+
+  const handleSelectPlan = (planName: string) => {
+    setLoadingPlan(planName);
+    // Navigate to pricing page or open subscription dialog
+    navigate("/pricing");
+    setLoadingPlan(null);
+  };
 
   return (
     <main className="min-h-screen bg-background">
@@ -46,7 +95,18 @@ const Index = () => {
             Choose Your Perfect Plan
           </h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto px-4">
-            <Pricing />
+            {plans.map((plan) => (
+              <PricingCard
+                key={plan.name}
+                name={plan.name}
+                price={plan.price}
+                description={plan.description}
+                features={plan.features}
+                popular={plan.popular}
+                onSelect={() => handleSelectPlan(plan.name)}
+                loading={loadingPlan === plan.name}
+              />
+            ))}
           </div>
         </div>
       </section>
