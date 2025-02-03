@@ -19,8 +19,8 @@ const Footer = () => {
       title: "Company",
       links: [
         { name: "About", href: "/about", icon: Info },
-        { name: "Blog", href: "/blog", icon: MessageSquare },
         { name: "Careers", href: "/careers", icon: Briefcase },
+        { name: "Partners", href: "/partners", icon: Users },
       ]
     },
     {
@@ -28,7 +28,7 @@ const Footer = () => {
       links: [
         { name: "Community", href: "/community", icon: Users },
         { name: "Help Center", href: "/help", icon: HelpCircle },
-        { name: "Partners", href: "/partners", icon: Users },
+        { name: "Blog", href: "/blog", icon: MessageSquare },
       ]
     },
     {
@@ -48,7 +48,8 @@ const Footer = () => {
           {footerSections.map((section, idx) => (
             <div key={section.title} className={cn(
               "space-y-6",
-              "animate-fade-in [--animation-delay:var(--delay-${idx})]"
+              "animate-fade-in",
+              `[--delay-${idx}]`
             )}>
               <h3 className="text-2xl font-bold text-white tracking-tight">
                 {section.title}
@@ -75,7 +76,7 @@ const Footer = () => {
             <div className="flex items-center space-x-2">
               <Shield className="w-5 h-5 text-green-500" />
               <p className="text-gray-400 text-sm">
-                &copy; {new Date().getFullYear()} AudioMaster AI. All rights reserved.
+                &copy; {new Date().getFullYear()} Kolerr Technologies Inc. All rights reserved.
               </p>
             </div>
             <div className="flex items-center gap-6">
