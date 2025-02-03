@@ -1,7 +1,8 @@
-import { ArrowRight, Book, Headphones, Upload, Settings } from "lucide-react";
+import { Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
+import { ConvertButton } from "@/components/ui/convert-button";
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -32,14 +33,7 @@ const Hero = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in [--delay-2]">
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-green-500 to-blue-500 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group"
-              onClick={scrollToConversion}
-            >
-              <Upload className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              Convert Book Now
-            </Button>
+            <ConvertButton onClick={scrollToConversion} />
             <Button 
               size="lg" 
               variant="outline" 
