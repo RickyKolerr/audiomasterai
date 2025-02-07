@@ -403,6 +403,42 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_products: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          price: number
+          price_id: string
+          product_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          price: number
+          price_id: string
+          product_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          price?: number
+          price_id?: string
+          product_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       study_materials: {
         Row: {
           content_type: string
