@@ -1,12 +1,16 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
-import NotificationSettings from "@/components/settings/NotificationSettings"
+import ProfileSettings from "@/components/settings/ProfileSettings"
 import SecuritySettings from "@/components/settings/SecuritySettings"
+import NotificationSettings from "@/components/settings/NotificationSettings"
+import BillingSettings from "@/components/settings/BillingSettings"
 import { useToast } from "@/hooks/use-toast"
-import { Bell, Lock, Settings as SettingsIcon } from "lucide-react"
+import { useProfile } from "@/hooks/use-profile"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 const Settings = () => {
   const { toast } = useToast()
+  const { isLoading } = useProfile()
 
   const handleSettingsSave = () => {
     toast({
@@ -15,30 +19,30 @@ const Settings = () => {
     })
   }
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <LoadingSpinner className="h-8 w-8" />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-black">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-white mb-8">Settings</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">Account Settings</h1>
         
-        <Tabs defaultValue="notifications" className="space-y-4">
+        <Tabs defaultValue="profile" className="space-y-4">
           <TabsList className="bg-black/50 border border-green-500/20">
-            <TabsTrigger value="notifications" className="data-[state=active]:bg-green-500">
-              <Bell className="h-4 w-4 mr-2" />
-              Notifications
-            </TabsTrigger>
-            <TabsTrigger value="security" className="data-[state=active]:bg-green-500">
-              <Lock className="h-4 w-4 mr-2" />
-              Security
-            </TabsTrigger>
-            <TabsTrigger value="preferences" className="data-[state=active]:bg-green-500">
-              <SettingsIcon className="h-4 w-4 mr-2" />
-              Preferences
-            </TabsTrigger>
+            <TabsTrigger value="profile" className="data-[state=active]:bg-green-500">Profile</TabsTrigger>
+            <TabsTrigger value="security" className="data-[state=active]:bg-green-500">Security</TabsTrigger>
+            <TabsTrigger value="notifications" className="data-[state=active]:bg-green-500">Notifications</TabsTrigger>
+            <TabsTrigger value="billing" className="data-[state=active]:bg-green-500">Billing</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="notifications">
+          <TabsContent value="profile">
             <Card className="bg-black/50 border border-green-500/20 p-6">
-              <NotificationSettings onSave={handleSettingsSave} />
+              <ProfileSettings />
             </Card>
           </TabsContent>
 
@@ -48,11 +52,15 @@ const Settings = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="preferences">
+          <TabsContent value="notifications">
             <Card className="bg-black/50 border border-green-500/20 p-6">
-              <div className="text-gray-400 text-center py-8">
-                Preferences settings coming soon...
-              </div>
+              <NotificationSettings onSave={handleSettingsSave} />
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="billing">
+            <Card className="bg-black/50 border border-green-500/20 p-6">
+              <BillingSettings onSave={handleSettingsSave} />
             </Card>
           </TabsContent>
         </Tabs>
