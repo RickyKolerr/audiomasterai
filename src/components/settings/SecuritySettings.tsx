@@ -75,5 +75,3 @@ const SecuritySettings = ({ onSave }: SecuritySettingsProps) => {
     </form>
   )
 }
-
-export default SecuritySettings

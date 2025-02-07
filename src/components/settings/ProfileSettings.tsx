@@ -81,5 +81,3 @@ const ProfileSettings = () => {
     </form>
   )
 }
-
-export default ProfileSettings

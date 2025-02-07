@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card"
 import ProfileSettings from "@/components/settings/ProfileSettings"
 import SecuritySettings from "@/components/settings/SecuritySettings"
 import NotificationSettings from "@/components/settings/NotificationSettings"
-import BillingSettings from "@/components/settings/BillingSettings"
 import { useToast } from "@/hooks/use-toast"
 import { useProfile } from "@/hooks/use-profile"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
@@ -37,7 +36,6 @@ const Settings = () => {
             <TabsTrigger value="profile" className="data-[state=active]:bg-green-500">Profile</TabsTrigger>
             <TabsTrigger value="security" className="data-[state=active]:bg-green-500">Security</TabsTrigger>
             <TabsTrigger value="notifications" className="data-[state=active]:bg-green-500">Notifications</TabsTrigger>
-            <TabsTrigger value="billing" className="data-[state=active]:bg-green-500">Billing</TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile">
@@ -55,12 +53,6 @@ const Settings = () => {
           <TabsContent value="notifications">
             <Card className="bg-black/50 border border-green-500/20 p-6">
               <NotificationSettings onSave={handleSettingsSave} />
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="billing">
-            <Card className="bg-black/50 border border-green-500/20 p-6">
-              <BillingSettings onSave={handleSettingsSave} />
             </Card>
           </TabsContent>
         </Tabs>
