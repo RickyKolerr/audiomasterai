@@ -1,11 +1,10 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Check, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import PricingCard from "@/components/pricing/PricingCard";
 import SubscriptionDialog from "@/components/pricing/SubscriptionDialog";
+import { supabase } from "@/integrations/supabase/client";
 
 const PricingPage = () => {
   const [selectedPlan, setSelectedPlan] = useState<{
@@ -18,44 +17,95 @@ const PricingPage = () => {
   const plans = [
     {
       name: "Basic",
-      price: "Free",
+      price: "5",
       description: "Perfect for getting started",
+      limits: {
+        books: 3,
+        materials: 5,
+      },
+      payPerUse: {
+        book: 0.99,
+        material: 0.99,
+      },
       features: [
-        "Convert up to 3 books per month",
-        "Basic voice options",
-        "Standard quality audio",
-        "Email support"
+        { text: "Basic voice customization", included: true },
+        { text: "Standard quality audio", included: true },
+        { text: "Email support", included: true },
+        { text: "Premium voices", included: false },
+        { text: "Priority support", included: false },
       ]
     },
     {
-      name: "Pro",
-      price: "$9.99",
+      name: "Standard",
+      price: "15",
       description: "Most popular choice",
+      limits: {
+        books: 10,
+        materials: 15,
+      },
+      payPerUse: {
+        book: 1.49,
+        material: 1.49,
+      },
       features: [
-        "Convert up to 20 books per month",
-        "Premium voice options",
-        "High quality audio",
-        "Priority support",
-        "Offline access"
+        { text: "Premium voice options", included: true },
+        { text: "High quality audio", included: true },
+        { text: "Priority support", included: true },
+        { text: "Advanced analytics", included: true },
+        { text: "API access", included: false },
       ],
       popular: true
     },
     {
-      name: "Enterprise",
-      price: "$29.99",
+      name: "Pro",
+      price: "30",
       description: "For power users",
+      limits: {
+        books: 30,
+        materials: 50,
+      },
+      payPerUse: {
+        book: 1.99,
+        material: 1.99,
+      },
       features: [
-        "Unlimited conversions",
-        "All premium voices",
-        "Ultra-high quality audio",
-        "24/7 priority support",
-        "API access",
-        "Custom voice training"
+        { text: "All premium voices", included: true },
+        { text: "Ultra-high quality audio", included: true },
+        { text: "Priority support", included: true },
+        { text: "Advanced analytics", included: true },
+        { text: "API access", included: true },
+      ]
+    },
+    {
+      name: "Enterprise",
+      price: "100",
+      description: "For businesses and teams",
+      limits: {
+        books: Infinity,
+        materials: Infinity,
+      },
+      features: [
+        { text: "Unlimited conversions", included: true },
+        { text: "All premium voices", included: true },
+        { text: "24/7 priority support", included: true },
+        { text: "Custom voice training", included: true },
+        { text: "Dedicated account manager", included: true },
       ]
     }
   ];
 
   const handleSelectPlan = (plan: { name: string; price: string }) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to subscribe to a plan",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setSelectedPlan(plan);
   };
 
@@ -71,7 +121,7 @@ const PricingPage = () => {
           Choose the perfect plan for your needs. All plans include our core features with different usage limits.
         </p>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {plans.map((plan, index) => (
             <PricingCard
               key={index}
@@ -83,34 +133,33 @@ const PricingPage = () => {
         </div>
 
         <div className="mt-16 text-center">
-          <h2 className="text-2xl font-bold mb-4">Secure Payment Methods</h2>
-          <div className="flex justify-center items-center gap-8">
-            <div className="flex items-center gap-2 text-gray-400">
-              <div className="rounded-lg bg-black/30 p-3 border border-green-500/20">
-                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
-                </svg>
-              </div>
-              <span>Credit Card</span>
+          <h2 className="text-2xl font-bold mb-4">Additional Services</h2>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="p-6 rounded-xl bg-black/50 border border-green-500/20">
+              <h3 className="text-lg font-semibold mb-2">Voice Customization</h3>
+              <p className="text-gray-400 mb-4">Enhance your audio with premium voices</p>
+              <ul className="text-sm text-gray-300">
+                <li>Advanced Voice: $0.49</li>
+                <li>Premium Voice: $1.99</li>
+              </ul>
             </div>
-            <div className="flex items-center gap-2 text-gray-400">
-              <div className="rounded-lg bg-black/30 p-3 border border-green-500/20">
-                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm1 19h-2v-2h2v2zm0-4h-2V5h2v10z"/>
-                </svg>
-              </div>
-              <span>PayPal</span>
+            <div className="p-6 rounded-xl bg-black/50 border border-green-500/20">
+              <h3 className="text-lg font-semibold mb-2">Storage & Downloads</h3>
+              <p className="text-gray-400 mb-4">Additional storage space</p>
+              <ul className="text-sm text-gray-300">
+                <li>$0.50 per 1GB</li>
+                <li>Beyond free plan limit</li>
+              </ul>
+            </div>
+            <div className="p-6 rounded-xl bg-black/50 border border-green-500/20">
+              <h3 className="text-lg font-semibold mb-2">Bulk Discounts</h3>
+              <p className="text-gray-400 mb-4">Save more with volume</p>
+              <ul className="text-sm text-gray-300">
+                <li>Contact sales for</li>
+                <li>custom pricing</li>
+              </ul>
             </div>
           </div>
-        </div>
-
-        <div className="mt-12 max-w-2xl mx-auto text-center text-gray-400">
-          <p className="mb-4">
-            All payments are processed securely through Stripe. We never store your card details.
-          </p>
-          <p>
-            Questions about our pricing? <button className="text-green-500 hover:text-green-400 transition-colors">Contact our sales team</button>
-          </p>
         </div>
       </div>
 
