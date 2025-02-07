@@ -19,10 +19,11 @@ const Index = () => {
       price: "Free",
       description: "Perfect for getting started",
       features: [
-        "Convert up to 3 books per month",
-        "Basic voice options",
-        "Standard quality audio",
-        "Email support"
+        { text: "Convert up to 3 books per month", included: true },
+        { text: "Basic voice options", included: true },
+        { text: "Standard quality audio", included: true },
+        { text: "Email support", included: true },
+        { text: "Premium voices", included: false }
       ]
     },
     {
@@ -30,11 +31,11 @@ const Index = () => {
       price: "$9.99",
       description: "Most popular choice",
       features: [
-        "Convert up to 20 books per month",
-        "Premium voice options",
-        "High quality audio",
-        "Priority support",
-        "Offline access"
+        { text: "Convert up to 20 books per month", included: true },
+        { text: "Premium voice options", included: true },
+        { text: "High quality audio", included: true },
+        { text: "Priority support", included: true },
+        { text: "Offline access", included: true }
       ],
       popular: true
     },
@@ -43,12 +44,12 @@ const Index = () => {
       price: "$29.99",
       description: "For power users",
       features: [
-        "Unlimited conversions",
-        "All premium voices",
-        "Ultra-high quality audio",
-        "24/7 priority support",
-        "API access",
-        "Custom voice training"
+        { text: "Unlimited conversions", included: true },
+        { text: "All premium voices", included: true },
+        { text: "Ultra-high quality audio", included: true },
+        { text: "24/7 priority support", included: true },
+        { text: "API access", included: true },
+        { text: "Custom voice training", included: true }
       ]
     }
   ];
