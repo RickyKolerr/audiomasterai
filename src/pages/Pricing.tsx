@@ -94,19 +94,31 @@ const PricingPage = () => {
     }
   ];
 
-  const handleSelectPlan = (plan: { name: string; price: string }) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
+  const handleSelectPlan = async (plan: { name: string; price: string }) => {
+    setLoading(plan.name);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to subscribe to a plan",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setSelectedPlan(plan);
+    } catch (error) {
+      console.error('Error:', error);
       toast({
-        title: "Authentication Required",
-        description: "Please sign in to subscribe to a plan",
+        title: "Error",
+        description: "Failed to process your request",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setLoading(null);
     }
-    
-    setSelectedPlan(plan);
   };
 
   return (
