@@ -1,10 +1,11 @@
+
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { PaymentMethodSelector } from "@/components/PaymentMethodSelector";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SubscriptionDialogProps {
   isOpen: boolean;
@@ -19,20 +20,53 @@ const SubscriptionDialog = ({
   planName,
   planPrice,
 }: SubscriptionDialogProps) => {
-  const [paymentMethod, setPaymentMethod] = useState("card");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const handleSubscribe = async () => {
-    setLoading(true);
-    // Mock subscription process - replace with real API call later
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    toast({
-      title: "Subscription successful!",
-      description: `You are now subscribed to the ${planName} plan.`,
-    });
-    setLoading(false);
-    onClose();
+    try {
+      setLoading(true);
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to subscribe",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout-session`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ planName }),
+        }
+      );
+
+      const { url, error } = await response.json();
+      
+      if (error) {
+        throw new Error(error);
+      }
+
+      // Redirect to Stripe Checkout
+      window.location.href = url;
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to start checkout process. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,14 +83,9 @@ const SubscriptionDialog = ({
               Selected Plan: <span className="text-white">{planName}</span>
             </div>
             <div className="text-sm text-gray-400">
-              Price: <span className="text-white">{planPrice}/month</span>
+              Price: <span className="text-white">${planPrice}/month</span>
             </div>
           </Card>
-          
-          <PaymentMethodSelector
-            selectedMethod={paymentMethod}
-            onSelect={setPaymentMethod}
-          />
           
           <Button
             onClick={handleSubscribe}
@@ -69,7 +98,7 @@ const SubscriptionDialog = ({
                 Processing...
               </>
             ) : (
-              "Confirm Subscription"
+              "Proceed to Checkout"
             )}
           </Button>
         </div>

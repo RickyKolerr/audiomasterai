@@ -382,6 +382,27 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_prices: {
+        Row: {
+          created_at: string
+          id: number
+          plan_name: string
+          stripe_price_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          plan_name: string
+          stripe_price_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          plan_name?: string
+          stripe_price_id?: string
+        }
+        Relationships: []
+      }
       study_materials: {
         Row: {
           content_type: string
