@@ -5,19 +5,28 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Camera } from "lucide-react"
+import { useProfile } from "@/hooks/use-profile"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
-interface ProfileSettingsProps {
-  onSave: () => void
-}
+const ProfileSettings = () => {
+  const { profile, isLoading, updateProfile } = useProfile()
+  const [username, setUsername] = useState(profile?.username || "")
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "")
 
-const ProfileSettings = ({ onSave }: ProfileSettingsProps) => {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [bio, setBio] = useState("")
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onSave()
+    updateProfile.mutate({
+      username,
+      avatar_url: avatarUrl,
+    })
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner />
+      </div>
+    )
   }
 
   return (
@@ -25,8 +34,8 @@ const ProfileSettings = ({ onSave }: ProfileSettingsProps) => {
       <div className="space-y-4">
         <div className="flex items-center space-x-4">
           <Avatar className="h-20 w-20">
-            <AvatarImage src="/placeholder.svg" />
-            <AvatarFallback>UN</AvatarFallback>
+            <AvatarImage src={avatarUrl || "/placeholder.svg"} />
+            <AvatarFallback>{username?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
           </Avatar>
           <Button variant="outline" size="sm" className="space-x-2">
             <Camera className="h-4 w-4" />
@@ -35,12 +44,12 @@ const ProfileSettings = ({ onSave }: ProfileSettingsProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
+          <Label htmlFor="username">Username</Label>
           <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your full name"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your username"
           />
         </div>
 
@@ -49,25 +58,24 @@ const ProfileSettings = ({ onSave }: ProfileSettingsProps) => {
           <Input
             id="email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
+            value={profile?.id || ""}
+            disabled
+            className="bg-gray-100"
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="bio">Bio</Label>
-          <Textarea
-            id="bio"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            placeholder="Tell us about yourself"
-            className="min-h-[100px]"
-          />
+          <p className="text-sm text-gray-500">
+            Your email is managed through your authentication provider.
+          </p>
         </div>
       </div>
 
-      <Button type="submit" className="w-full bg-green-500 hover:bg-green-600">
+      <Button 
+        type="submit" 
+        className="w-full bg-green-500 hover:bg-green-600"
+        disabled={updateProfile.isPending}
+      >
+        {updateProfile.isPending ? (
+          <LoadingSpinner className="mr-2 h-4 w-4" />
+        ) : null}
         Save Changes
       </Button>
     </form>
