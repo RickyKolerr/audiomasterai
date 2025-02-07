@@ -1,142 +1,49 @@
-import { useState } from "react";
-import { Menu, Settings, Star, DollarSign, Mail, Book, Crown, ShoppingCart, FileText, LogOut, Users, Briefcase } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ThemeToggle } from "./theme/ThemeToggle";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
-import { Logo } from "./ui/logo";
+import { Link } from "react-router-dom"
+import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme/ThemeToggle"
+import { SettingsDropdown } from "@/components/settings/SettingsDropdown"
+import { ProfileDropdown } from "@/components/settings/ProfileDropdown"
+import { useProfile } from "@/hooks/use-profile"
 
 const Navbar = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const { toast } = useToast();
-
-  const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message,
-      });
-    } else {
-      toast({
-        title: "Signed out successfully",
-      });
-      navigate("/");
-    }
-  };
-
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
-
-  const navItems = [
-    { path: "/features", icon: Book, label: "Features" },
-    { path: "/pricing", icon: DollarSign, label: "Pricing" },
-    { path: "/partners", icon: Users, label: "Partners" },
-    { path: "/careers", icon: Briefcase, label: "Careers" },
-    { path: "/marketplace", icon: ShoppingCart, label: "Marketplace" },
-    { path: "/contact", icon: Mail, label: "Contact" },
-  ];
+  const { profile } = useProfile()
 
   return (
-    <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm z-50 py-4 border-b border-green-500/20">
-      <div className="container mx-auto flex items-center justify-between px-4">
-        <Logo />
-        
-        <div className="hidden md:flex items-center space-x-8">
-          <NavigationMenu>
-            <NavigationMenuList className="space-x-6">
-              {navItems.map((item) => (
-                <NavigationMenuItem key={item.path}>
-                  <Link 
-                    to={item.path}
-                    className={`text-foreground hover:text-green-500 transition-colors flex items-center gap-2 group ${
-                      isActive(item.path) ? 'text-green-500' : ''
-                    }`}
-                  >
-                    <item.icon className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                    {item.label}
-                  </Link>
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
-          <ThemeToggle />
-          <Button 
-            className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group"
-            onClick={() => navigate("/auth")}
-          >
-            <Crown className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-            Get Started
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleSignOut}
-            className="text-gray-400 hover:text-white"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
+    <nav className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 max-w-screen-2xl items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link to="/" className="mr-6 flex items-center space-x-2">
+            <span className="hidden font-bold sm:inline-block">AudioBook AI</span>
+          </Link>
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            <Link to="/features" className="transition-colors hover:text-foreground/80">Features</Link>
+            <Link to="/pricing" className="transition-colors hover:text-foreground/80">Pricing</Link>
+            <Link to="/about" className="transition-colors hover:text-foreground/80">About</Link>
+            <Link to="/docs" className="transition-colors hover:text-foreground/80">Documentation</Link>
+          </nav>
         </div>
 
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden text-foreground">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] bg-background border-l border-green-500/20">
-            <div className="flex flex-col space-y-6 mt-6">
-              <Logo size="sm" />
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`text-foreground hover:text-green-500 transition-colors flex items-center gap-2 group ${
-                    isActive(item.path) ? 'text-green-500' : ''
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <item.icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  {item.label}
-                </Link>
-              ))}
-              <div className="flex items-center gap-4">
-                <ThemeToggle />
-              </div>
-              <Button 
-                className="bg-gradient-to-r from-green-500 via-blue-500 to-pink-500 text-white hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group w-full"
-                onClick={() => {
-                  setIsOpen(false);
-                  navigate("/auth");
-                }}
-              >
-                <Crown className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-                Get Started
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none">
+            {/* Add search or other elements here if needed */}
+          </div>
+          <nav className="flex items-center space-x-2">
+            {profile ? (
+              <>
+                <SettingsDropdown />
+                <ProfileDropdown />
+              </>
+            ) : (
+              <Button asChild variant="default">
+                <Link to="/auth">Sign In</Link>
               </Button>
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  handleSignOut();
-                  setIsOpen(false);
-                }}
-                className="w-full justify-start text-gray-400 hover:text-white"
-              >
-                <LogOut className="h-5 w-5 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          </SheetContent>
-        </Sheet>
+            )}
+            <ThemeToggle />
+          </nav>
+        </div>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
