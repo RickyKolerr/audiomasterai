@@ -1,12 +1,13 @@
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Settings, Book, Download } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import { useProfile } from "@/hooks/use-profile"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { Camera, Settings } from "lucide-react"
-import { Link } from "react-router-dom"
 
 const Profile = () => {
+  const navigate = useNavigate()
   const { profile, isLoading } = useProfile()
 
   if (isLoading) {
@@ -20,57 +21,80 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-black">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">Profile</h1>
-          <Link to="/settings">
-            <Button variant="outline" size="icon" className="rounded-full">
-              <Settings className="h-5 w-5" />
-              <span className="sr-only">Settings</span>
-            </Button>
-          </Link>
-        </div>
-
-        <Card className="bg-black/50 border border-green-500/20 p-6">
-          <div className="flex flex-col items-center space-y-4">
-            <div className="relative">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Profile Info */}
+          <Card className="p-6 bg-black/50 border border-green-500/20">
+            <div className="flex flex-col items-center space-y-4">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={profile?.avatar_url || undefined} />
-                <AvatarFallback>{profile?.username?.charAt(0)?.toUpperCase() || 'U'}</AvatarFallback>
+                <AvatarImage src={profile?.avatar_url || "/placeholder.svg"} />
+                <AvatarFallback>
+                  {profile?.username?.charAt(0)?.toUpperCase() || "U"}
+                </AvatarFallback>
               </Avatar>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="absolute bottom-0 right-0 rounded-full bg-black/50 backdrop-blur-sm"
+              <div className="text-center">
+                <h2 className="text-xl font-bold text-white">
+                  {profile?.username || "Anonymous User"}
+                </h2>
+                <p className="text-sm text-gray-400">{profile?.id}</p>
+              </div>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate("/settings")}
               >
-                <Camera className="h-4 w-4" />
-                <span className="sr-only">Change avatar</span>
+                <Settings className="mr-2 h-4 w-4" />
+                Edit Profile
               </Button>
             </div>
+          </Card>
 
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold text-white">{profile?.username || 'Anonymous'}</h2>
-              <p className="text-gray-400">{profile?.id}</p>
-            </div>
-
-            <div className="w-full max-w-md space-y-4 mt-8">
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold text-white">Subscription</h3>
-                <p className="text-gray-400">
-                  {profile?.subscription_status === 'active' 
-                    ? `Active - ${profile?.subscription_plan}` 
-                    : 'No active subscription'}
+          {/* Subscription Status */}
+          <Card className="p-6 bg-black/50 border border-green-500/20">
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Subscription Status
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-400">Current Plan</p>
+                <p className="text-white font-medium">
+                  {profile?.subscription_plan || "Free"}
                 </p>
               </div>
-
-              <div className="space-y-2">
-                <h3 className="text-lg font-semibold text-white">Usage</h3>
-                <p className="text-gray-400">
-                  {profile?.monthly_conversions_used || 0} conversions this month
+              <div>
+                <p className="text-sm text-gray-400">Status</p>
+                <p className="text-white font-medium">
+                  {profile?.subscription_status || "Active"}
                 </p>
               </div>
+              <Button className="w-full bg-green-500 hover:bg-green-600">
+                Upgrade Plan
+              </Button>
             </div>
-          </div>
-        </Card>
+          </Card>
+
+          {/* Usage Statistics */}
+          <Card className="p-6 bg-black/50 border border-green-500/20">
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Usage Statistics
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Book className="h-4 w-4 text-gray-400 mr-2" />
+                  <span className="text-gray-400">Books Converted</span>
+                </div>
+                <span className="text-white font-medium">0</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Download className="h-4 w-4 text-gray-400 mr-2" />
+                  <span className="text-gray-400">Downloads</span>
+                </div>
+                <span className="text-white font-medium">0</span>
+              </div>
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   )

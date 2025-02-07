@@ -80,3 +80,5 @@ const NotificationSettings = ({ onSave }: NotificationSettingsProps) => {
     </form>
   )
 }
+
+export default NotificationSettings
