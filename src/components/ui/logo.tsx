@@ -1,3 +1,4 @@
+
 import { Headphones } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -47,7 +48,7 @@ export const Logo = ({ className, showText = true, size = "md" }: LogoProps) => 
             Audiovable
           </span>
           {size !== "sm" && (
-            <span className="text-sm text-gray-400">by Kolerr Technologies</span>
+            <span className="text-sm text-gray-400">AI</span>
           )}
         </div>
       )}

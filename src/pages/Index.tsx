@@ -1,3 +1,4 @@
+
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
@@ -16,47 +17,69 @@ const Index = () => {
   const plans = [
     {
       name: "Basic",
-      price: "Free",
+      price: "5",
       description: "Perfect for getting started",
+      limits: {
+        books: 3,
+        materials: 5,
+      },
+      payPerUse: {
+        book: 0.99,
+        material: 0.99,
+      },
       features: [
-        { text: "Convert up to 3 books per month", included: true },
-        { text: "Basic voice options", included: true },
+        { text: "Basic voice customization", included: true },
         { text: "Standard quality audio", included: true },
         { text: "Email support", included: true },
-        { text: "Premium voices", included: false }
+        { text: "Premium voices", included: false },
+        { text: "Priority support", included: false }
       ]
     },
     {
-      name: "Pro",
-      price: "$9.99",
+      name: "Standard",
+      price: "15",
       description: "Most popular choice",
+      limits: {
+        books: 10,
+        materials: 15,
+      },
+      payPerUse: {
+        book: 1.49,
+        material: 1.49,
+      },
       features: [
-        { text: "Convert up to 20 books per month", included: true },
         { text: "Premium voice options", included: true },
         { text: "High quality audio", included: true },
         { text: "Priority support", included: true },
-        { text: "Offline access", included: true }
+        { text: "Advanced analytics", included: true },
+        { text: "API access", included: false }
       ],
       popular: true
     },
     {
-      name: "Enterprise",
-      price: "$29.99",
+      name: "Pro",
+      price: "30",
       description: "For power users",
+      limits: {
+        books: 30,
+        materials: 50,
+      },
+      payPerUse: {
+        book: 1.99,
+        material: 1.99,
+      },
       features: [
-        { text: "Unlimited conversions", included: true },
         { text: "All premium voices", included: true },
         { text: "Ultra-high quality audio", included: true },
-        { text: "24/7 priority support", included: true },
-        { text: "API access", included: true },
-        { text: "Custom voice training", included: true }
+        { text: "Priority support", included: true },
+        { text: "Advanced analytics", included: true },
+        { text: "API access", included: true }
       ]
     }
   ];
 
   const handleSelectPlan = (planName: string) => {
     setLoadingPlan(planName);
-    // Navigate to pricing page or open subscription dialog
     navigate("/pricing");
     setLoadingPlan(null);
   };
@@ -95,15 +118,11 @@ const Index = () => {
           <h2 className="text-3xl font-bold text-center mb-12">
             Choose Your Perfect Plan
           </h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
             {plans.map((plan) => (
               <PricingCard
                 key={plan.name}
-                name={plan.name}
-                price={plan.price}
-                description={plan.description}
-                features={plan.features}
-                popular={plan.popular}
+                {...plan}
                 onSelect={() => handleSelectPlan(plan.name)}
                 loading={loadingPlan === plan.name}
               />
