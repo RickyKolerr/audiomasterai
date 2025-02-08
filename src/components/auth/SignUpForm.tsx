@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { FormField } from "@/components/ui/form-field"
@@ -6,6 +7,7 @@ import { signUpSchema } from "@/lib/validations/form-schemas"
 import { useFormValidation } from "@/hooks/use-form-validation"
 import { supabase } from "@/integrations/supabase/client"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import ReCAPTCHA from "react-google-recaptcha"
 
 interface SignUpFormData {
   email: string
@@ -15,6 +17,7 @@ interface SignUpFormData {
 
 export const SignUpForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const { toast } = useToast()
   const {
     formData,
@@ -31,11 +34,23 @@ export const SignUpForm = () => {
     
     if (!validateForm()) return
 
+    if (!captchaToken) {
+      toast({
+        title: "Error",
+        description: "Please complete the CAPTCHA verification",
+        variant: "destructive",
+      })
+      return
+    }
+
     setIsSubmitting(true)
     try {
       const { error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          captchaToken
+        }
       })
 
       if (error) throw error
@@ -84,9 +99,17 @@ export const SignUpForm = () => {
         error={errors.confirmPassword}
         disabled={isSubmitting}
       />
+
+      <div className="flex justify-center my-4">
+        <ReCAPTCHA
+          sitekey="YOUR_RECAPTCHA_SITE_KEY"
+          onChange={(token) => setCaptchaToken(token)}
+        />
+      </div>
+
       <Button 
         type="submit" 
-        disabled={isSubmitting}
+        disabled={isSubmitting || !captchaToken}
         className="w-full"
       >
         {isSubmitting ? (
