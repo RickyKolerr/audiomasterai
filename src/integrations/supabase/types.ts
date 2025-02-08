@@ -445,43 +445,31 @@ export type Database = {
       }
       pay_per_use_rates: {
         Row: {
-          base_rate: number
-          bulk_discount_rate: number | null
-          bulk_discount_threshold: number | null
-          created_at: string
+          created_at: string | null
+          description: string | null
           id: string
-          is_active: boolean | null
-          max_units: number | null
-          min_units: number | null
           name: string
+          rate: number
           type: string
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
-          base_rate: number
-          bulk_discount_rate?: number | null
-          bulk_discount_threshold?: number | null
-          created_at?: string
+          created_at?: string | null
+          description?: string | null
           id?: string
-          is_active?: boolean | null
-          max_units?: number | null
-          min_units?: number | null
           name: string
+          rate: number
           type: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
-          base_rate?: number
-          bulk_discount_rate?: number | null
-          bulk_discount_threshold?: number | null
-          created_at?: string
+          created_at?: string | null
+          description?: string | null
           id?: string
-          is_active?: boolean | null
-          max_units?: number | null
-          min_units?: number | null
           name?: string
+          rate?: number
           type?: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: []
       }

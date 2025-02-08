@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -142,36 +143,6 @@ const PricingPage = () => {
               loading={loading === plan.name}
             />
           ))}
-        </div>
-
-        <div className="mt-16 text-center">
-          <h2 className="text-2xl font-bold mb-4">Additional Services</h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="p-6 rounded-xl bg-black/50 border border-green-500/20">
-              <h3 className="text-lg font-semibold mb-2">Voice Customization</h3>
-              <p className="text-gray-400 mb-4">Enhance your audio with premium voices</p>
-              <ul className="text-sm text-gray-300">
-                <li>Advanced Voice: $0.49</li>
-                <li>Premium Voice: $1.99</li>
-              </ul>
-            </div>
-            <div className="p-6 rounded-xl bg-black/50 border border-green-500/20">
-              <h3 className="text-lg font-semibold mb-2">Storage & Downloads</h3>
-              <p className="text-gray-400 mb-4">Additional storage space</p>
-              <ul className="text-sm text-gray-300">
-                <li>$0.50 per 1GB</li>
-                <li>Beyond free plan limit</li>
-              </ul>
-            </div>
-            <div className="p-6 rounded-xl bg-black/50 border border-green-500/20">
-              <h3 className="text-lg font-semibold mb-2">Bulk Discounts</h3>
-              <p className="text-gray-400 mb-4">Save more with volume</p>
-              <ul className="text-sm text-gray-300">
-                <li>Contact sales for</li>
-                <li>custom pricing</li>
-              </ul>
-            </div>
-          </div>
         </div>
       </div>
 
