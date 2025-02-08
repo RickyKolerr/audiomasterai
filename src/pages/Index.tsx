@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import PricingCard from "@/components/pricing/PricingCard";
+import PayPerUseRates from "@/components/pricing/PayPerUseRates";
 import FeedbackPage from "@/components/feedback/FeedbackPage";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -128,6 +129,19 @@ const Index = () => {
               />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Pay-per-use Rates Section */}
+      <section className="py-20 bg-accent/5">
+        <div className="container mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-4">
+            Pay-per-use Rates
+          </h2>
+          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+            Flexible pricing for your conversion needs. Pay only for what you use with our transparent rate structure.
+          </p>
+          <PayPerUseRates />
         </div>
       </section>
 

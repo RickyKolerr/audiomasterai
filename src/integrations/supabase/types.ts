@@ -434,6 +434,48 @@ export type Database = {
           },
         ]
       }
+      pay_per_use_rates: {
+        Row: {
+          base_rate: number
+          bulk_discount_rate: number | null
+          bulk_discount_threshold: number | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          max_units: number | null
+          min_units: number | null
+          name: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          base_rate: number
+          bulk_discount_rate?: number | null
+          bulk_discount_threshold?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_units?: number | null
+          min_units?: number | null
+          name: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          base_rate?: number
+          bulk_discount_rate?: number | null
+          bulk_discount_threshold?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_units?: number | null
+          min_units?: number | null
+          name?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       premium_voices: {
         Row: {
           created_at: string
@@ -779,6 +821,60 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      usage_records: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          rate_id: string
+          status: string
+          total_cost: number
+          units_used: number
+          usage_date: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          rate_id: string
+          status?: string
+          total_cost: number
+          units_used: number
+          usage_date?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          rate_id?: string
+          status?: string
+          total_cost?: number
+          units_used?: number
+          usage_date?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_records_rate_id_fkey"
+            columns: ["rate_id"]
+            isOneToOne: false
+            referencedRelation: "pay_per_use_rates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "usage_records_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
