@@ -7,6 +7,7 @@ import AnalyticsChart from "@/components/dashboard/AnalyticsChart";
 import UsageStatistics from "@/components/dashboard/UsageStatistics";
 import ActivityLogs from "@/components/dashboard/ActivityLogs";
 import DownloadHistory from "@/components/downloads/DownloadHistory";
+import ProfileSettingsForm from "@/components/settings/ProfileSettingsForm";
 import SubscriptionPlans from "@/components/subscription/SubscriptionPlans";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useQuery } from "@tanstack/react-query";
@@ -77,17 +78,21 @@ const Dashboard = () => {
   // Client Dashboard UI
   const ClientDashboard = () => (
     <>
-      <UsageStatistics />
-      
       <div className="grid md:grid-cols-2 gap-8">
+        <UsageStatistics />
         <ActivityLogs />
-        <DownloadHistory />
       </div>
-
-      <Card className="p-6 bg-black/50 border border-green-500/20">
-        <h2 className="text-2xl font-bold text-white mb-6">Subscription Plans</h2>
-        <SubscriptionPlans />
-      </Card>
+      
+      <div className="grid md:grid-cols-2 gap-8 mt-8">
+        <DownloadHistory />
+        <div className="space-y-8">
+          <ProfileSettingsForm />
+          <Card className="p-6 bg-black/50 border border-green-500/20">
+            <h2 className="text-2xl font-bold text-white mb-6">Current Subscription</h2>
+            <SubscriptionPlans />
+          </Card>
+        </div>
+      </div>
     </>
   );
 
