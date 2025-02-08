@@ -5,6 +5,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
 import { Camera } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { supabase } from "@/integrations/supabase/client"
+import { useRef } from "react"
 
 type ProfileInfoProps = {
   profile: any
@@ -18,6 +21,57 @@ type ProfileInfoProps = {
 }
 
 const ProfileInfo = ({ profile, formData, isEditing, handleInputChange }: ProfileInfoProps) => {
+  const { toast } = useToast()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file",
+        variant: "destructive",
+      })
+      return
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop()
+      const filePath = `${profile.id}/${crypto.randomUUID()}.${fileExt}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath)
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', profile.id)
+
+      if (updateError) throw updateError
+
+      toast({
+        title: "Avatar updated",
+        description: "Your profile picture has been updated successfully",
+      })
+    } catch (error) {
+      console.error('Error uploading avatar:', error)
+      toast({
+        title: "Upload failed",
+        description: "There was an error uploading your avatar. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
   return (
     <Card className="p-6 bg-black/50 border border-green-500/20">
       <div className="space-y-6">
@@ -28,7 +82,19 @@ const ProfileInfo = ({ profile, formData, isEditing, handleInputChange }: Profil
               {profile?.username?.charAt(0)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
-          <Button variant="outline" size="sm" className="space-x-2">
+          <input 
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleAvatarUpload}
+          />
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="space-x-2"
+            onClick={() => fileInputRef.current?.click()}
+          >
             <Camera className="h-4 w-4" />
             <span>Change Photo</span>
           </Button>
