@@ -754,6 +754,50 @@ export type Database = {
         }
         Relationships: []
       }
+      study_progress: {
+        Row: {
+          completed_at: string | null
+          id: string
+          last_position_seconds: number | null
+          progress_percentage: number | null
+          started_at: string | null
+          study_material_id: string | null
+          time_spent_seconds: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          last_position_seconds?: number | null
+          progress_percentage?: number | null
+          started_at?: string | null
+          study_material_id?: string | null
+          time_spent_seconds?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          last_position_seconds?: number | null
+          progress_percentage?: number | null
+          started_at?: string | null
+          study_material_id?: string | null
+          time_spent_seconds?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_progress_study_material_id_fkey"
+            columns: ["study_material_id"]
+            isOneToOne: false
+            referencedRelation: "study_materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean | null
