@@ -2,22 +2,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Info } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface PayPerUseRate {
   id: string;
   name: string;
+  description: string;
+  rate: number;
   type: string;
-  base_rate: number;
-  bulk_discount_rate: number | null;
-  bulk_discount_threshold: number | null;
 }
 
 const PayPerUseRates = () => {
@@ -27,7 +18,7 @@ const PayPerUseRates = () => {
       const { data, error } = await supabase
         .from('pay_per_use_rates')
         .select('*')
-        .order('base_rate');
+        .order('rate');
       
       if (error) throw error;
       return data as PayPerUseRate[];
@@ -54,48 +45,38 @@ const PayPerUseRates = () => {
   }, {} as Record<string, PayPerUseRate[]>);
 
   return (
-    <div className="space-y-8">
-      {Object.entries(groupedRates || {}).map(([type, typeRates]) => (
-        <div key={type} className="space-y-4">
-          <h3 className="text-xl font-semibold capitalize">
-            {type} Conversion Rates
-          </h3>
-          <div className="grid gap-4 md:grid-cols-3">
-            {typeRates.map((rate) => (
-              <Card key={rate.id} className="p-6 bg-black/50 border-green-500/20">
-                <h4 className="text-lg font-medium mb-2">{rate.name}</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-400">Base Rate</span>
-                    <span className="font-semibold">${rate.base_rate}/unit</span>
-                  </div>
-                  {rate.bulk_discount_rate && (
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <span className="text-gray-400 mr-1">Bulk Rate</span>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="h-4 w-4 text-gray-400" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Applied when converting {rate.bulk_discount_threshold}+ units</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <span className="font-semibold text-green-500">
-                        ${rate.bulk_discount_rate}/unit
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </Card>
+    <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+      {groupedRates?.voice && (
+        <Card className="p-6 rounded-xl bg-black/50 border border-green-500/20">
+          <h3 className="text-lg font-semibold mb-2">Voice Customization</h3>
+          <p className="text-gray-400 mb-4">Enhance your audio with premium voices</p>
+          <ul className="text-sm text-gray-300">
+            {groupedRates.voice.map((rate) => (
+              <li key={rate.id}>{rate.name}: ${rate.rate}</li>
             ))}
-          </div>
-          <Separator className="bg-gray-800" />
-        </div>
-      ))}
+          </ul>
+        </Card>
+      )}
+      {groupedRates?.storage && (
+        <Card className="p-6 rounded-xl bg-black/50 border border-green-500/20">
+          <h3 className="text-lg font-semibold mb-2">Storage & Downloads</h3>
+          <p className="text-gray-400 mb-4">Additional storage space</p>
+          <ul className="text-sm text-gray-300">
+            {groupedRates.storage.map((rate) => (
+              <li key={rate.id}>${rate.rate} per 1GB</li>
+            ))}
+            <li>Beyond free plan limit</li>
+          </ul>
+        </Card>
+      )}
+      <Card className="p-6 rounded-xl bg-black/50 border border-green-500/20">
+        <h3 className="text-lg font-semibold mb-2">Bulk Discounts</h3>
+        <p className="text-gray-400 mb-4">Save more with volume</p>
+        <ul className="text-sm text-gray-300">
+          <li>Contact sales for</li>
+          <li>custom pricing</li>
+        </ul>
+      </Card>
     </div>
   );
 };
