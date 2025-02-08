@@ -1,16 +1,13 @@
+
 import { useState } from "react"
-import { Card } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/hooks/use-toast"
-import { Camera, Save, X, Lock, CreditCard } from "lucide-react"
+import { Save, X } from "lucide-react"
 import { useProfile } from "@/hooks/use-profile"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { Separator } from "@/components/ui/separator"
-import { PaymentMethodSelector } from "@/components/PaymentMethodSelector"
+import ProfileInfo from "@/components/profile/ProfileInfo"
+import SecurityNotifications from "@/components/profile/SecurityNotifications"
+import SubscriptionPayment from "@/components/profile/SubscriptionPayment"
 
 const Profile = () => {
   const { profile, isLoading, updateProfile } = useProfile()
@@ -76,170 +73,24 @@ const Profile = () => {
         <h1 className="text-3xl font-bold text-white mb-8">My Profile</h1>
         
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Profile Info */}
-          <Card className="p-6 bg-black/50 border border-green-500/20">
-            <div className="space-y-6">
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage src={profile?.avatar_url || "/placeholder.svg"} />
-                  <AvatarFallback>
-                    {profile?.username?.charAt(0)?.toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <Button variant="outline" size="sm" className="space-x-2">
-                  <Camera className="h-4 w-4" />
-                  <span>Change Photo</span>
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input
-                      id="firstName"
-                      value={formData.firstName}
-                      onChange={(e) => handleInputChange("firstName", e.target.value)}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                      id="lastName"
-                      value={formData.lastName}
-                      onChange={(e) => handleInputChange("lastName", e.target.value)}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input
-                    id="username"
-                    value={formData.username}
-                    onChange={(e) => handleInputChange("username", e.target.value)}
-                    disabled={!isEditing}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={profile?.id || ""}
-                    disabled
-                    className="bg-gray-100"
-                  />
-                  <p className="text-sm text-gray-500">
-                    Your email is managed through your authentication provider
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Security & Notifications */}
-          <Card className="p-6 bg-black/50 border border-green-500/20">
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Lock className="h-5 w-5 text-green-500" />
-                  Security
-                </h3>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="currentPassword">Current Password</Label>
-                    <Input
-                      id="currentPassword"
-                      type="password"
-                      value={formData.currentPassword}
-                      onChange={(e) => handleInputChange("currentPassword", e.target.value)}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="newPassword">New Password</Label>
-                    <Input
-                      id="newPassword"
-                      type="password"
-                      value={formData.newPassword}
-                      onChange={(e) => handleInputChange("newPassword", e.target.value)}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      value={formData.confirmPassword}
-                      onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                      disabled={!isEditing}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Notifications</h3>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Email Notifications</Label>
-                    <p className="text-sm text-gray-400">
-                      Receive updates and notifications via email
-                    </p>
-                  </div>
-                  <Switch
-                    checked={formData.emailNotifications}
-                    onCheckedChange={(checked) => handleInputChange("emailNotifications", checked)}
-                    disabled={!isEditing}
-                  />
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Subscription & Payment */}
-          <Card className="p-6 bg-black/50 border border-green-500/20 md:col-span-2">
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-green-500" />
-                Subscription & Payment
-              </h3>
-
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Current Plan</Label>
-                  <Card className="p-4 bg-black/30 border-green-500/20">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">{profile?.subscription_plan || "Free"}</p>
-                        <p className="text-sm text-gray-400">
-                          {profile?.subscription_status === "active" ? "Active" : "Inactive"}
-                        </p>
-                      </div>
-                      <Button variant="outline" size="sm">
-                        Upgrade
-                      </Button>
-                    </div>
-                  </Card>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Payment Method</Label>
-                  <PaymentMethodSelector
-                    selectedMethod={formData.paymentMethod}
-                    onSelect={(method) => handleInputChange("paymentMethod", method)}
-                  />
-                </div>
-              </div>
-            </div>
-          </Card>
+          <ProfileInfo
+            profile={profile}
+            formData={formData}
+            isEditing={isEditing}
+            handleInputChange={handleInputChange}
+          />
+          
+          <SecurityNotifications
+            formData={formData}
+            isEditing={isEditing}
+            handleInputChange={handleInputChange}
+          />
+          
+          <SubscriptionPayment
+            profile={profile}
+            formData={formData}
+            handleInputChange={handleInputChange}
+          />
         </div>
 
         <div className="flex justify-end gap-4 mt-8">
