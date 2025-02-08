@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Book, Play, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ const BookConversion = () => {
       const { error: dbError } = await supabase
         .from('books')
         .insert({
-          user_id: session.user.id, // Add the user_id field
+          user_id: session.user.id,
           title: file.name,
           original_filename: file.name,
           file_path: filePath,
