@@ -49,8 +49,7 @@ export const SignUpForm = () => {
         email: formData.email,
         password: formData.password,
         options: {
-          captchaToken,
-          emailRedirectTo: `${window.location.origin}/dashboard`
+          captchaToken
         }
       })
 
@@ -61,7 +60,6 @@ export const SignUpForm = () => {
         description: "Please check your email to verify your account.",
       })
     } catch (error) {
-      console.error("Sign up error:", error);
       toast({
         title: "Error",
         description: "Failed to sign up. Please try again.",

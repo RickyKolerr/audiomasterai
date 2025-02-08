@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Headphones, Facebook } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Headphones, Mail, Facebook } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 import SignInForm from "@/components/auth/SignInForm";
 import SignUpForm from "@/components/auth/SignUpForm";
 import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
@@ -18,15 +17,6 @@ const Auth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate("/dashboard");
-      }
-    };
-
-    checkAuth();
-
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         navigate("/dashboard");
@@ -50,7 +40,6 @@ const Auth = () => {
       
       if (error) throw error;
     } catch (error) {
-      console.error("Facebook login error:", error);
       toast({
         variant: "destructive",
         title: "Error",
