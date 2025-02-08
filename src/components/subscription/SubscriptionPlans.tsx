@@ -30,7 +30,7 @@ const SubscriptionPlans = () => {
   const plans = [
     {
       name: "Basic",
-      price: "Free",
+      price: "$5",
       features: [
         "3 conversions per month",
         "Basic voice options",
@@ -39,27 +39,26 @@ const SubscriptionPlans = () => {
       ]
     },
     {
-      name: "Pro",
-      price: "$9.99",
+      name: "Standard",
+      price: "$15",
       features: [
-        "20 conversions per month",
+        "10 conversions per month",
         "Premium voice options",
         "High quality audio",
         "Priority support",
-        "Download history"
+        "Advanced analytics"
       ],
       popular: true
     },
     {
-      name: "Enterprise",
-      price: "$29.99",
+      name: "Pro",
+      price: "$30",
       features: [
-        "Unlimited conversions",
+        "30 conversions per month",
         "All premium voices",
         "Ultra-high quality audio",
-        "24/7 priority support",
-        "API access",
-        "Custom voice training"
+        "Priority support",
+        "API access"
       ]
     }
   ];
