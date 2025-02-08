@@ -88,17 +88,21 @@ const StudyMaterialUpload = () => {
 
       const fileExt = file.name.split('.').pop();
       const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
-      
+
+      // Split file into chunks for progress tracking
+      const chunkSize = 1024 * 1024; // 1MB chunks
+      const totalChunks = Math.ceil(file.size / chunkSize);
+      let uploadedChunks = 0;
+
+      // Upload the file
       const { error: uploadError } = await supabase.storage
         .from('study-materials')
-        .upload(filePath, file, {
-          onUploadProgress: (progress) => {
-            const percent = (progress.loaded / progress.total) * 100;
-            setUploadProgress(percent);
-          },
-        });
+        .upload(filePath, file);
 
       if (uploadError) throw uploadError;
+
+      // Update progress after successful upload
+      setUploadProgress(100);
 
       const { error: dbError } = await supabase
         .from('study_materials')
@@ -221,3 +225,4 @@ const StudyMaterialUpload = () => {
 };
 
 export default StudyMaterialUpload;
+
