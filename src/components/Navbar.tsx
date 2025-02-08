@@ -1,24 +1,17 @@
-
-import { Link, useLocation } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme/ThemeToggle"
 import { SettingsDropdown } from "@/components/settings/SettingsDropdown"
 import { ProfileDropdown } from "@/components/settings/ProfileDropdown"
 import { useProfile } from "@/hooks/use-profile"
-import { BackButton } from "@/components/ui/back-button"
 
 const Navbar = () => {
   const { profile } = useProfile()
-  const location = useLocation()
-  const showBackButton = location.pathname !== "/"
 
   return (
     <nav className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
-          {showBackButton && (
-            <BackButton className="mr-4" />
-          )}
           <Link to="/" className="mr-6 flex items-center space-x-2">
             <span className="hidden font-bold sm:inline-block">AudioBook AI</span>
           </Link>

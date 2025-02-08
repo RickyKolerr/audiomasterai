@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -7,7 +6,6 @@ import { signInSchema } from "@/lib/validations/form-schemas"
 import { useFormValidation } from "@/hooks/use-form-validation"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { supabase } from "@/integrations/supabase/client"
-import ReCAPTCHA from "react-google-recaptcha"
 
 interface SignInFormProps {
   onForgotPassword: () => void;
@@ -20,7 +18,6 @@ interface SignInFormData {
 
 export const SignInForm = ({ onForgotPassword }: SignInFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const { toast } = useToast()
   const {
     formData,
@@ -37,23 +34,11 @@ export const SignInForm = ({ onForgotPassword }: SignInFormProps) => {
     
     if (!validateForm()) return
 
-    if (!captchaToken) {
-      toast({
-        title: "Error",
-        description: "Please complete the CAPTCHA verification",
-        variant: "destructive",
-      })
-      return
-    }
-
     setIsSubmitting(true)
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
-        options: {
-          captchaToken
-        }
       })
 
       if (error) throw error
@@ -103,13 +88,6 @@ export const SignInForm = ({ onForgotPassword }: SignInFormProps) => {
         )}
       </div>
 
-      <div className="flex justify-center my-4">
-        <ReCAPTCHA
-          sitekey="YOUR_RECAPTCHA_SITE_KEY"
-          onChange={(token) => setCaptchaToken(token)}
-        />
-      </div>
-
       <Button 
         type="button"
         variant="link"
@@ -121,7 +99,7 @@ export const SignInForm = ({ onForgotPassword }: SignInFormProps) => {
 
       <Button 
         type="submit" 
-        disabled={isSubmitting || !captchaToken}
+        disabled={isSubmitting}
         className="w-full"
       >
         {isSubmitting ? (
