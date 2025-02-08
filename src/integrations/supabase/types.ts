@@ -153,10 +153,12 @@ export type Database = {
       }
       books: {
         Row: {
+          author: string | null
           content_type: string
           conversion_error: string | null
           converted_audio_path: string | null
           created_at: string
+          duration: number | null
           file_path: string
           file_size: number
           id: string
@@ -170,10 +172,12 @@ export type Database = {
           voice_settings: Json | null
         }
         Insert: {
+          author?: string | null
           content_type: string
           conversion_error?: string | null
           converted_audio_path?: string | null
           created_at?: string
+          duration?: number | null
           file_path: string
           file_size: number
           id?: string
@@ -187,10 +191,12 @@ export type Database = {
           voice_settings?: Json | null
         }
         Update: {
+          author?: string | null
           content_type?: string
           conversion_error?: string | null
           converted_audio_path?: string | null
           created_at?: string
+          duration?: number | null
           file_path?: string
           file_size?: number
           id?: string
@@ -319,6 +325,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_testimonial: boolean | null
           message: string
           rating: number
           user_id: string
@@ -326,6 +333,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_testimonial?: boolean | null
           message: string
           rating: number
           user_id: string
@@ -333,6 +341,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_testimonial?: boolean | null
           message?: string
           rating?: number
           user_id?: string
